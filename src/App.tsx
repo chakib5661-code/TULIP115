@@ -72,6 +72,7 @@ import {
 } from './utils/api';
 import { idbSaveProducts, idbGetProducts, idbSaveOfflineOrders, idbGetOfflineOrders } from './utils/indexedDb';
 import { prefetchProductImages, getCachedImagesCount } from './utils/imageCache';
+import { subscribeToSupabaseRealtime, triggerAutoSyncToSupabase } from './utils/supabaseClient';
 
 const STORAGE_KEYS = {
   PRODUCTS: 'elathir_catalog_products',
@@ -893,6 +894,27 @@ export default function App() {
     safeSetStorageItem(STORAGE_KEYS.AD_POPUP_ENABLED, JSON.stringify(isAdPopupEnabled));
   }, [isAdPopupEnabled]);
 
+  // Automatic Cloud Sync to Supabase whenever administrative data or orders change
+  const isInitialMountRef = useRef(true);
+  useEffect(() => {
+    if (isInitialMountRef.current) {
+      isInitialMountRef.current = false;
+      return;
+    }
+    // Only auto-push if catalog has items
+    if (products.length > 0) {
+      triggerAutoSyncToSupabase(() => ({
+        products,
+        orders,
+        customerApplications,
+        customerUsers,
+        adBanners,
+        storeSettings,
+        lastUpdated: new Date().toISOString(),
+      }), 1500);
+    }
+  }, [products, orders, customerApplications, customerUsers, adBanners, storeSettings]);
+
   // Live Server Database Synchronization (Runs on load and every 15s)
   const lastSyncedServerTimeRef = useRef<string>('');
 
@@ -1018,9 +1040,37 @@ export default function App() {
 
     syncWithServer();
     const interval = setInterval(syncWithServer, 15000);
+
+    // SUPABASE REALTIME SUBSCRIPTION (Instant, zero-lag cross-device sync)
+    const unsubscribeRealtime = subscribeToSupabaseRealtime((cloudData: any) => {
+      if (!isMounted || !cloudData) return;
+      console.log('[Realtime] Applying live changes from other device...');
+
+      if (Array.isArray(cloudData.products) && cloudData.products.length > 0) {
+        setProducts(cloudData.products);
+        setIsCatalogLoading(false);
+      }
+      if (Array.isArray(cloudData.orders)) {
+        setOrders(cloudData.orders);
+      }
+      if (Array.isArray(cloudData.customerApplications)) {
+        setCustomerApplications(cloudData.customerApplications);
+      }
+      if (Array.isArray(cloudData.customerUsers)) {
+        setCustomerUsers(cloudData.customerUsers);
+      }
+      if (Array.isArray(cloudData.adBanners)) {
+        setAdBanners(cloudData.adBanners);
+      }
+      if (cloudData.storeSettings && typeof cloudData.storeSettings === 'object') {
+        setStoreSettings(cloudData.storeSettings);
+      }
+    });
+
     return () => {
       isMounted = false;
       clearInterval(interval);
+      unsubscribeRealtime();
     };
   }, []);
 

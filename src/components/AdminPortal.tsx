@@ -1958,6 +1958,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                               Supabase PostgreSQL
                             </span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+                              Real-Time Sync Actif
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-violet-500/20 text-violet-300 border border-violet-500/30">
+                              ⚡ Auto-Push Actif
+                            </span>
                           </div>
                           <p className="text-xs text-slate-400 mt-0.5">
                             Stockage persistant universel pour hébergement Vercel sans perte de données aux redémarrages.

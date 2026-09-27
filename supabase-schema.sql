@@ -204,5 +204,20 @@ DROP POLICY IF EXISTS "Anon full access on tulip_store_state" ON public.tulip_st
 CREATE POLICY "Anon full access on tulip_store_state" ON public.tulip_store_state
   FOR ALL TO anon USING (true) WITH CHECK (true);
 
+-- =========================================================================
+-- SUPABASE REALTIME REPLICATION (Instant Real-Time Multi-Device Sync)
+-- =========================================================================
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables 
+    WHERE pubname = 'supabase_realtime' 
+    AND schemaname = 'public' 
+    AND tablename = 'tulip_store_state'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.tulip_store_state;
+  END IF;
+END $$;
+
 -- Confirmation check
-SELECT 'Tulip Fragrance Company schema successfully installed!' AS result;
+SELECT 'Tulip Fragrance Company schema & real-time replication successfully installed!' AS result;

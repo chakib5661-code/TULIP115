@@ -23,7 +23,40 @@ export function getClientSupabaseCredentials(): { url: string; key: string } {
   return { url, key };
 }
 
+let autoSyncTimer: any = null;
+let isPushingToSupabase = false;
 let clientInstance: SupabaseClient | null = null;
+
+/**
+ * Automatically pushes changes to Supabase in background with debounce.
+ * Ensures every catalog edit, order, customer change, banner or setting update
+ * is persisted to Supabase and immediately broadcast to all devices.
+ */
+export function triggerAutoSyncToSupabase(snapshotProvider: () => any, delayMs = 1200): void {
+  const client = getClientSupabase();
+  if (!client) return;
+
+  if (autoSyncTimer) {
+    clearTimeout(autoSyncTimer);
+  }
+
+  autoSyncTimer = setTimeout(async () => {
+    if (isPushingToSupabase) return;
+    try {
+      isPushingToSupabase = true;
+      const snapshot = snapshotProvider();
+      if (!snapshot || !Array.isArray(snapshot.products) || snapshot.products.length === 0) {
+        return;
+      }
+      console.log('[Supabase Auto-Sync] Automatically pushing latest state to Supabase Cloud...');
+      await directClientSaveToSupabase(snapshot);
+    } catch (err) {
+      console.warn('[Supabase Auto-Sync] Notice:', err);
+    } finally {
+      isPushingToSupabase = false;
+    }
+  }, delayMs);
+}
 
 export function getClientSupabase(): SupabaseClient | null {
   const { url, key } = getClientSupabaseCredentials();
@@ -160,5 +193,53 @@ export async function directClientSaveToSupabase(dbSnapshot: any): Promise<{
       success: false,
       error: err?.message || String(err),
     };
+  }
+}
+
+/**
+ * Subscribes to real-time changes on the Supabase tulip_store_state table.
+ * Whenever any admin or device updates products, orders, banners, or settings,
+ * the callback is triggered with zero delay across all devices!
+ */
+export function subscribeToSupabaseRealtime(
+  onUpdate: (updatedData: any) => void
+): () => void {
+  const client = getClientSupabase();
+  if (!client) {
+    return () => {};
+  }
+
+  try {
+    const channel = client
+      .channel('tulip_realtime_store_channel')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'tulip_store_state',
+          filter: 'key=eq.main_state',
+        },
+        (payload: any) => {
+          if (payload?.new && payload.new.data) {
+            console.log('[Supabase Realtime] Received live update from cloud:', payload.new.updated_at);
+            onUpdate(payload.new.data);
+          }
+        }
+      )
+      .subscribe((status: string) => {
+        console.log('[Supabase Realtime] Channel subscription status:', status);
+      });
+
+    return () => {
+      try {
+        client.removeChannel(channel);
+      } catch (err) {
+        console.warn('[Supabase Realtime] Error removing channel:', err);
+      }
+    };
+  } catch (err) {
+    console.warn('[Supabase Realtime] Error subscribing to changes:', err);
+    return () => {};
   }
 }
