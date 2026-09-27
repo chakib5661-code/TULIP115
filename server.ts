@@ -1,8 +1,10 @@
 import express from "express";
 import http from "http";
 import path from "path";
+import fs from "fs";
 import dotenv from "dotenv";
 import * as storeDb from "./src/server/storeDb";
+import * as supabaseDb from "./src/server/supabaseDb";
 
 dotenv.config();
 
@@ -28,21 +30,81 @@ app.use(express.json({ limit: "25mb" }));
 // Load / initialize persistent database
 storeDb.loadDatabase();
 
+// Attempt non-blocking Supabase sync at startup
+if (supabaseDb.isSupabaseConfigured()) {
+  storeDb.syncWithSupabaseAsync().catch((e) => {
+    console.warn("[Server] Initial Supabase sync notice:", e?.message || e);
+  });
+}
+
 // Health check & Server Status
   app.get("/api/health", (_req, res) => {
     res.json({
       status: "ok",
       company: "Tulip Fragrance Company",
       telegramConfigured: Boolean(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID),
-      storage: "persistent_file_db",
+      storage: supabaseDb.isSupabaseConfigured() ? "supabase_cloud" : "persistent_file_db",
+      supabaseConfigured: supabaseDb.isSupabaseConfigured(),
       timestamp: new Date().toISOString(),
     });
   });
 
-  // Global Sync / Bootstrap Endpoint for Real-Time Multi-Device State
-  app.get("/api/sync", (_req, res) => {
+  // Supabase Connection Diagnostics Endpoint
+  app.get("/api/supabase/status", async (_req, res) => {
     try {
+      const status = await supabaseDb.testSupabaseConnection();
+      res.json({ success: true, ...status });
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err?.message || String(err) });
+    }
+  });
+
+  // Supabase Manual Sync/Push Endpoint (Admin utility)
+  app.post("/api/supabase/sync", async (_req, res) => {
+    try {
+      if (!supabaseDb.isSupabaseConfigured()) {
+        return res.status(400).json({
+          success: false,
+          error: "Supabase n'est pas encore configuré. Renseignez SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY dans les variables d'environnement.",
+        });
+      }
       const db = storeDb.loadDatabase();
+      const pushed = await supabaseDb.saveDatabaseToSupabase(db);
+      res.json({
+        success: pushed,
+        message: pushed
+          ? "Base de données synchronisée avec succès vers Supabase."
+          : "Échec de la synchronisation vers Supabase. Vérifiez les logs et exécutez le script SQL supabase-schema.sql.",
+        lastUpdated: db.lastUpdated,
+      });
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err?.message || String(err) });
+    }
+  });
+
+  // Analytics Environment Configuration Endpoint
+  app.get("/api/analytics-config", (_req, res) => {
+    const gaMeasurementId = (process.env.VITE_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID || "").trim();
+    const clarityProjectId = (process.env.VITE_CLARITY_PROJECT_ID || process.env.CLARITY_PROJECT_ID || "").trim();
+    res.json({
+      status: "ok",
+      gaMeasurementId,
+      clarityProjectId,
+    });
+  });
+
+  // Global Sync / Bootstrap Endpoint for Real-Time Multi-Device State
+  app.get("/api/sync", async (_req, res) => {
+    try {
+      // In serverless/Vercel or cold start, refresh from Supabase if configured
+      if (supabaseDb.isSupabaseConfigured()) {
+        await storeDb.syncWithSupabaseAsync().catch(() => {});
+      }
+
+      const db = storeDb.loadDatabase();
+      const gaMeasurementId = (process.env.VITE_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID || "").trim();
+      const clarityProjectId = (process.env.VITE_CLARITY_PROJECT_ID || process.env.CLARITY_PROJECT_ID || "").trim();
+
       res.json({
         status: "ok",
         products: db.products,
@@ -51,6 +113,11 @@ storeDb.loadDatabase();
         customerUsers: db.customerUsers,
         adBanners: db.adBanners,
         storeSettings: db.storeSettings,
+        storageProvider: supabaseDb.isSupabaseConfigured() ? "supabase" : "local",
+        analyticsConfig: {
+          gaMeasurementId,
+          clarityProjectId,
+        },
         lastUpdated: db.lastUpdated,
         serverTime: new Date().toISOString(),
       });
@@ -1091,6 +1158,19 @@ async function sendTelegramAccessRequestNotification(applicant: any) {
       const distPath = path.join(process.cwd(), "dist");
       app.use(express.static(distPath));
       app.get("*", (_req, res) => {
+        try {
+          const indexPath = path.join(distPath, "index.html");
+          if (fs.existsSync(indexPath)) {
+            let html = fs.readFileSync(indexPath, "utf8");
+            const gaMeasurementId = (process.env.VITE_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID || "").trim();
+            const clarityProjectId = (process.env.VITE_CLARITY_PROJECT_ID || process.env.CLARITY_PROJECT_ID || "").trim();
+            const envInjection = `<script>window.__TULIP_ENV__ = Object.assign(window.__TULIP_ENV__ || {}, { VITE_GA_MEASUREMENT_ID: ${JSON.stringify(gaMeasurementId)}, VITE_CLARITY_PROJECT_ID: ${JSON.stringify(clarityProjectId)} });</script>`;
+            html = html.replace("<head>", `<head>\n    ${envInjection}`);
+            return res.send(html);
+          }
+        } catch (e) {
+          console.warn("[Server] Notice injecting env into index.html:", e);
+        }
         res.sendFile(path.join(distPath, "index.html"));
       });
     }

@@ -37,13 +37,13 @@ export const StickyBottomOrderBar: React.FC<StickyBottomOrderBarProps> = ({
   return (
     <aside
       aria-label="Récapitulatif de votre commande"
-      className="fixed bottom-0 inset-x-0 bg-slate-900/95 backdrop-blur-md text-white border-t border-slate-800 py-2.5 sm:py-3 px-3 sm:px-4 z-40 shadow-2xl"
+      className="fixed bottom-0 inset-x-0 bg-gradient-to-r from-[#400320]/95 via-[#500428]/95 to-[#240313]/95 backdrop-blur-md text-white border-t border-[#70083b]/70 py-2.5 sm:py-3 px-3 sm:px-4 z-40 shadow-2xl"
       dir={isRtl ? 'rtl' : 'ltr'}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-2.5">
         <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-          <div className="p-2 rounded-xl bg-amber-500 text-slate-950 font-black shrink-0">
-            <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
+          <div className="p-2 rounded-xl bg-white/20 text-white font-black shrink-0 border border-white/25 shadow-xs">
+            <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 text-rose-100" />
           </div>
           <div className="min-w-0">
             <div className="text-xs font-bold text-white flex items-center gap-1.5 truncate">
@@ -51,7 +51,7 @@ export const StickyBottomOrderBar: React.FC<StickyBottomOrderBarProps> = ({
                 {cart.length} <span className="hidden xs:inline sm:inline">{lang === 'ar' ? 'أصناف' : 'références'}</span>
               </span>
               <span>•</span>
-              <span className="text-slate-300">
+              <span className="text-rose-200">
                 {totalUnitsOrGrams} <span className="hidden sm:inline">{lang === 'ar' ? 'وحدة / غرام' : 'unités / g'}</span>
               </span>
             </div>
@@ -60,15 +60,15 @@ export const StickyBottomOrderBar: React.FC<StickyBottomOrderBarProps> = ({
             <div className="text-xs font-mono font-extrabold flex items-center gap-1.5 mt-0.5">
               {isPricesVisible ? (
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-xs text-amber-300 font-sans font-bold">
+                  <span className="text-xs text-rose-200 font-sans font-bold">
                     {lang === 'ar' ? 'المجموع :' : 'Total :'}
                   </span>
-                  <span className="text-amber-400 text-sm sm:text-base font-black tracking-tight">
+                  <span className="text-rose-300 text-sm sm:text-base font-black tracking-tight">
                     {formatDZD(totalPriceDA)}
                   </span>
                 </div>
               ) : (
-                <span className="text-[11px] text-slate-400 font-sans font-normal truncate">
+                <span className="text-[11px] text-rose-200/80 font-sans font-normal truncate">
                   {t.totalHiddenNotice}
                 </span>
               )}
@@ -81,18 +81,18 @@ export const StickyBottomOrderBar: React.FC<StickyBottomOrderBarProps> = ({
             id="btn-sticky-bar-cart"
             type="button"
             onClick={onOpenCart}
-            className="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 sm:gap-2 shadow-lg cursor-pointer transition"
+            className="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-[#9f0e4e] via-[#c2185b] to-[#e91e63] hover:opacity-95 text-white font-black text-xs flex items-center justify-center gap-1.5 sm:gap-2 shadow-lg shadow-rose-950/40 cursor-pointer transition border border-rose-300/30"
           >
             <span>{t.cartBtn}</span>
-            <span className="bg-slate-950 text-amber-300 px-1.5 py-0.5 rounded-full text-[11px]">
+            <span className="bg-black/30 text-rose-100 px-1.5 py-0.5 rounded-full text-[11px]">
               {cart.length}
             </span>
             {isPricesVisible && (
-              <span className="text-slate-950 font-mono text-xs font-bold hidden xs:inline sm:inline">
+              <span className="text-white font-mono text-xs font-bold hidden xs:inline sm:inline">
                 • {formatDZD(totalPriceDA)}
               </span>
             )}
-            <ArrowRight className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRtl ? 'rotate-180' : ''}`} />
+            <ArrowRight className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-100 ${isRtl ? 'rotate-180' : ''}`} />
           </button>
         </div>
       </div>

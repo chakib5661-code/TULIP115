@@ -11,6 +11,11 @@ import {
 } from '../types';
 import { INITIAL_PRODUCTS, INITIAL_STORE_SETTINGS } from '../data/initialProducts';
 import { INITIAL_CUSTOMER_APPLICATIONS, INITIAL_AD_BANNERS } from '../data/initialCustomerData';
+import {
+  isSupabaseConfigured,
+  loadDatabaseFromSupabase,
+  saveDatabaseToSupabase,
+} from './supabaseDb';
 
 export interface ServerDatabase {
   products: Product[];
@@ -26,6 +31,8 @@ const IS_VERCEL = Boolean(process.env.VERCEL);
 const DATA_DIR = process.env.DATA_DIR || (IS_VERCEL ? path.join('/tmp', 'tulip-data') : path.join(process.cwd(), 'data'));
 const DB_FILE = process.env.DB_FILE || path.join(DATA_DIR, 'store_db.json');
 const SEED_FILE = path.join(process.cwd(), 'data', 'store_db.json');
+
+let hasAttemptedSupabaseInit = false;
 
 function normalizePhone(phone?: string): string {
   if (!phone) return '';
@@ -230,8 +237,46 @@ export function persistDatabase(db: ServerDatabase): void {
     db.lastUpdated = new Date().toISOString();
     cachedDb = db;
     fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2), 'utf-8');
+
+    // Asynchronously save to Supabase if configured
+    if (isSupabaseConfigured()) {
+      saveDatabaseToSupabase(db).catch((err) => {
+        console.warn('[StoreDB] Background Supabase persist note:', err?.message || err);
+      });
+    }
   } catch (err) {
     console.error('[StoreDB] Error writing store_db.json:', err);
+  }
+}
+
+/**
+ * Loads database asynchronously from Supabase if available, updating the in-memory cache and file.
+ */
+export async function syncWithSupabaseAsync(): Promise<ServerDatabase> {
+  const localDb = loadDatabase();
+  if (!isSupabaseConfigured()) {
+    return localDb;
+  }
+
+  try {
+    const remoteDb = await loadDatabaseFromSupabase();
+    if (remoteDb && Array.isArray(remoteDb.products) && remoteDb.products.length > 0) {
+      cachedDb = remoteDb;
+      try {
+        fs.writeFileSync(DB_FILE, JSON.stringify(remoteDb, null, 2), 'utf-8');
+      } catch {
+        // Fallback for readonly fs
+      }
+      return remoteDb;
+    } else {
+      // First-time sync: seed Supabase with our existing catalog and settings
+      console.log('[StoreDB] Supabase is connected but empty. Seeding Supabase with local database...');
+      await saveDatabaseToSupabase(localDb);
+      return localDb;
+    }
+  } catch (err) {
+    console.warn('[StoreDB] syncWithSupabaseAsync error:', err);
+    return localDb;
   }
 }
 

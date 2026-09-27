@@ -1,11 +1,23 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig(() => {
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  const gaMeasurementId = (env.VITE_GA_MEASUREMENT_ID || env.GA_MEASUREMENT_ID || '').trim();
+  const clarityProjectId = (env.VITE_CLARITY_PROJECT_ID || env.CLARITY_PROJECT_ID || '').trim();
+
   return {
+    define: {
+      'import.meta.env.VITE_GA_MEASUREMENT_ID': JSON.stringify(gaMeasurementId),
+      'import.meta.env.VITE_CLARITY_PROJECT_ID': JSON.stringify(clarityProjectId),
+      'process.env.VITE_GA_MEASUREMENT_ID': JSON.stringify(gaMeasurementId),
+      'process.env.VITE_CLARITY_PROJECT_ID': JSON.stringify(clarityProjectId),
+      'process.env.GA_MEASUREMENT_ID': JSON.stringify(gaMeasurementId),
+      'process.env.CLARITY_PROJECT_ID': JSON.stringify(clarityProjectId),
+    },
     plugins: [
       react(),
       tailwindcss(),
@@ -45,8 +57,31 @@ export default defineConfig(() => {
           ],
         },
         workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+          cleanupOutdatedCaches: true,
+          clientsClaim: true,
+          skipWaiting: true,
+          // CRITICAL: Do NOT precache index.html so that new deployments never get trapped with old chunk hashes!
+          globPatterns: ['**/*.{js,css,ico,png,svg,woff,woff2}'],
+          navigateFallback: '/index.html',
+          navigateFallbackDenylist: [/^\/api/, /\.[a-z0-9]+$/i],
           runtimeCaching: [
+            // NetworkFirst for HTML page navigation: always fetches fresh index.html from server on deployment,
+            // while seamlessly falling back to cached version when customer is offline!
+            {
+              urlPattern: ({ request }) => request.mode === 'navigate',
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'tulip-html-cache',
+                networkTimeoutSeconds: 3,
+                expiration: {
+                  maxEntries: 1,
+                  maxAgeSeconds: 60 * 60 * 24 * 7,
+                },
+                cacheableResponse: {
+                  statuses: [0, 200],
+                },
+              },
+            },
             {
               urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
               handler: 'CacheFirst',

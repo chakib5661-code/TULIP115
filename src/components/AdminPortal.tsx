@@ -53,6 +53,7 @@ import { AdminAccessoryManagement } from './AdminAccessoryManagement';
 import { AdminAnalytics } from './AdminAnalytics';
 import { AdminTelegramModal } from './AdminTelegramModal';
 import { TulipLogo } from './TulipLogo';
+import { checkSupabaseStatus, syncDatabaseToSupabase } from '../utils/api';
 
 interface AdminPortalProps {
   products: Product[];
@@ -179,6 +180,71 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     exportDate?: string;
   } | null>(null);
   const [importMode, setImportMode] = useState<'replace' | 'merge'>('replace');
+
+  // Supabase Cloud Storage Status State
+  const [supabaseStatus, setSupabaseStatus] = useState<{
+    loading: boolean;
+    configured: boolean;
+    connected: boolean;
+    url?: string;
+    details?: string;
+    error?: string;
+  }>({
+    loading: false,
+    configured: false,
+    connected: false,
+  });
+  const [supabaseSyncing, setSupabaseSyncing] = useState(false);
+  const [supabaseSyncMsg, setSupabaseSyncMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const refreshSupabaseStatus = async () => {
+    setSupabaseStatus((prev) => ({ ...prev, loading: true }));
+    try {
+      const res = await checkSupabaseStatus();
+      setSupabaseStatus({
+        loading: false,
+        configured: Boolean(res.configured),
+        connected: Boolean(res.connected),
+        url: res.url,
+        details: res.details,
+        error: res.error,
+      });
+    } catch (e: any) {
+      setSupabaseStatus({
+        loading: false,
+        configured: false,
+        connected: false,
+        error: e?.message || 'Erreur lors du test de connexion',
+      });
+    }
+  };
+
+  const handleManualSupabaseSync = async () => {
+    setSupabaseSyncing(true);
+    setSupabaseSyncMsg(null);
+    try {
+      const res = await syncDatabaseToSupabase();
+      if (res.success) {
+        setSupabaseSyncMsg({
+          type: 'success',
+          text: res.message || 'Toutes les données du catalogue et du site ont été synchronisées vers Supabase !',
+        });
+        refreshSupabaseStatus();
+      } else {
+        setSupabaseSyncMsg({
+          type: 'error',
+          text: res.error || 'Échec de la synchronisation vers Supabase.',
+        });
+      }
+    } catch (err: any) {
+      setSupabaseSyncMsg({
+        type: 'error',
+        text: err?.message || 'Erreur lors de la synchronisation.',
+      });
+    } finally {
+      setSupabaseSyncing(false);
+    }
+  };
 
   // Active Admin Tab
   const [activeTab, setActiveTab] = useState<'stocks' | 'flacons' | 'accessories' | 'orders' | 'customers' | 'ads' | 'analytics' | 'users'>('stocks');
@@ -1817,6 +1883,104 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                             className="hidden"
                           />
                         </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SUPABASE CLOUD DATABASE INTEGRATION STATUS & CONTROL */}
+                  <div className="p-5 rounded-2xl bg-gradient-to-r from-slate-900/90 via-emerald-950/20 to-slate-900/90 border border-emerald-500/30 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
+                          <Database className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-sm font-bold text-white">Stockage Cloud Supabase (Vercel & Multi-Appareils)</h4>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                              Supabase PostgreSQL
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-400 mt-0.5">
+                            Stockage persistant universel pour hébergement Vercel sans perte de données aux redémarrages.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={refreshSupabaseStatus}
+                          disabled={supabaseStatus.loading}
+                          className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                        >
+                          <RefreshCw className={`w-3.5 h-3.5 ${supabaseStatus.loading ? 'animate-spin' : ''}`} />
+                          <span>Tester Connexion</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={handleManualSupabaseSync}
+                          disabled={supabaseSyncing}
+                          className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md transition cursor-pointer"
+                        >
+                          <UploadCloud className={`w-3.5 h-3.5 ${supabaseSyncing ? 'animate-bounce' : ''}`} />
+                          <span>{supabaseSyncing ? 'Synchronisation...' : 'Pousser vers Supabase'}</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {supabaseSyncMsg && (
+                      <div
+                        className={`p-3 rounded-xl text-xs flex items-center gap-2 animate-in fade-in ${
+                          supabaseSyncMsg.type === 'success'
+                            ? 'bg-emerald-950/70 border border-emerald-500/50 text-emerald-300'
+                            : 'bg-rose-950/70 border border-rose-800 text-rose-300'
+                        }`}
+                      >
+                        {supabaseSyncMsg.type === 'success' ? (
+                          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                        ) : (
+                          <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                        )}
+                        <span>{supabaseSyncMsg.text}</span>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                      <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 space-y-1">
+                        <div className="text-[11px] text-slate-400 font-medium">État Variables d'Environnement</div>
+                        <div className="font-bold flex items-center gap-2">
+                          <span
+                            className={`w-2 h-2 rounded-full ${
+                              supabaseStatus.configured ? 'bg-emerald-400' : 'bg-amber-400'
+                            }`}
+                          />
+                          <span className={supabaseStatus.configured ? 'text-emerald-300' : 'text-amber-300'}>
+                            {supabaseStatus.configured ? 'SUPABASE_URL Configuré' : 'En attente des clés Vercel'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 space-y-1">
+                        <div className="text-[11px] text-slate-400 font-medium">Connexion Supabase Cloud</div>
+                        <div className="font-bold flex items-center gap-2">
+                          <span
+                            className={`w-2 h-2 rounded-full ${
+                              supabaseStatus.connected ? 'bg-emerald-400' : 'bg-slate-500'
+                            }`}
+                          />
+                          <span className={supabaseStatus.connected ? 'text-emerald-300' : 'text-slate-400'}>
+                            {supabaseStatus.connected ? 'Connecté avec succès' : 'Cliquez sur Tester Connexion'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 space-y-1">
+                        <div className="text-[11px] text-slate-400 font-medium">Guide Déploiement Vercel</div>
+                        <div className="text-slate-300 text-[11px]">
+                          Fichier SQL inclus : <span className="font-mono text-emerald-400">supabase-schema.sql</span>
+                        </div>
                       </div>
                     </div>
                   </div>

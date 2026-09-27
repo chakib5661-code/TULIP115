@@ -38,20 +38,95 @@ declare global {
       [key: string]: any;
     };
     TiktokAnalyticsObject?: string;
+    __TULIP_ENV__?: {
+      VITE_GA_MEASUREMENT_ID?: string;
+      GA_MEASUREMENT_ID?: string;
+      VITE_CLARITY_PROJECT_ID?: string;
+      CLARITY_PROJECT_ID?: string;
+      [key: string]: any;
+    };
   }
 }
 
-// 1. Get Settings
+// 0. Extract Environment Variables for GA4 and Microsoft Clarity
+export function getEnvAnalyticsConfig(): { gaMeasurementId: string; clarityProjectId: string } {
+  let ga = '';
+  let clarity = '';
+
+  // Priority 1: Window object injected at runtime by server (e.g. Docker, Cloud Run, SSR)
+  if (typeof window !== 'undefined' && window.__TULIP_ENV__) {
+    const envObj = window.__TULIP_ENV__;
+    if (envObj.VITE_GA_MEASUREMENT_ID) ga = String(envObj.VITE_GA_MEASUREMENT_ID).trim();
+    else if (envObj.GA_MEASUREMENT_ID) ga = String(envObj.GA_MEASUREMENT_ID).trim();
+
+    if (envObj.VITE_CLARITY_PROJECT_ID) clarity = String(envObj.VITE_CLARITY_PROJECT_ID).trim();
+    else if (envObj.CLARITY_PROJECT_ID) clarity = String(envObj.CLARITY_PROJECT_ID).trim();
+  }
+
+  // Priority 2: Vite import.meta.env (client-side build or dev server)
+  if (!ga && typeof import.meta !== 'undefined' && import.meta.env) {
+    if (import.meta.env.VITE_GA_MEASUREMENT_ID) {
+      ga = String(import.meta.env.VITE_GA_MEASUREMENT_ID).trim();
+    } else if ((import.meta.env as any).GA_MEASUREMENT_ID) {
+      ga = String((import.meta.env as any).GA_MEASUREMENT_ID).trim();
+    }
+  }
+
+  if (!clarity && typeof import.meta !== 'undefined' && import.meta.env) {
+    if (import.meta.env.VITE_CLARITY_PROJECT_ID) {
+      clarity = String(import.meta.env.VITE_CLARITY_PROJECT_ID).trim();
+    } else if ((import.meta.env as any).CLARITY_PROJECT_ID) {
+      clarity = String((import.meta.env as any).CLARITY_PROJECT_ID).trim();
+    }
+  }
+
+  // Priority 3: Fallback process.env if available
+  if (!ga && typeof process !== 'undefined' && process.env) {
+    if (process.env.VITE_GA_MEASUREMENT_ID) ga = String(process.env.VITE_GA_MEASUREMENT_ID).trim();
+    else if (process.env.GA_MEASUREMENT_ID) ga = String(process.env.GA_MEASUREMENT_ID).trim();
+  }
+
+  if (!clarity && typeof process !== 'undefined' && process.env) {
+    if (process.env.VITE_CLARITY_PROJECT_ID) clarity = String(process.env.VITE_CLARITY_PROJECT_ID).trim();
+    else if (process.env.CLARITY_PROJECT_ID) clarity = String(process.env.CLARITY_PROJECT_ID).trim();
+  }
+
+  return { gaMeasurementId: ga, clarityProjectId: clarity };
+}
+
+// 1. Get Settings (with Environment Variables as default & fallback)
 export function getAnalyticsSettings(): AnalyticsSettings {
+  const envConfig = getEnvAnalyticsConfig();
+  const defaultWithEnv: AnalyticsSettings = {
+    ...DEFAULT_ANALYTICS_SETTINGS,
+    ga4Enabled: Boolean(envConfig.gaMeasurementId),
+    ga4MeasurementId: envConfig.gaMeasurementId,
+    heatmapsEnabled: Boolean(envConfig.clarityProjectId),
+    heatmapProvider: 'clarity',
+    heatmapProjectId: envConfig.clarityProjectId,
+  };
+
   try {
     const saved = localStorage.getItem(ANALYTICS_STORAGE_KEYS.SETTINGS);
     if (saved) {
-      return { ...DEFAULT_ANALYTICS_SETTINGS, ...JSON.parse(saved) };
+      const parsed: Partial<AnalyticsSettings> = JSON.parse(saved);
+      const effectiveGaId = parsed.ga4MeasurementId?.trim() || envConfig.gaMeasurementId;
+      const effectiveClarityId = parsed.heatmapProjectId?.trim() || envConfig.clarityProjectId;
+
+      return {
+        ...defaultWithEnv,
+        ...parsed,
+        ga4MeasurementId: effectiveGaId,
+        ga4Enabled: effectiveGaId ? (parsed.ga4Enabled ?? true) : false,
+        heatmapProjectId: effectiveClarityId,
+        heatmapsEnabled: effectiveClarityId ? (parsed.heatmapsEnabled ?? true) : false,
+        heatmapProvider: (parsed.heatmapProvider as any) || (effectiveClarityId ? 'clarity' : 'clarity'),
+      };
     }
   } catch (e) {
     console.error('Error reading analytics settings:', e);
   }
-  return DEFAULT_ANALYTICS_SETTINGS;
+  return defaultWithEnv;
 }
 
 // 2. Save Settings
@@ -68,9 +143,10 @@ export function saveAnalyticsSettings(settings: AnalyticsSettings): void {
 export function syncThirdPartyScripts(settings: AnalyticsSettings = getAnalyticsSettings()): void {
   if (typeof window === 'undefined') return;
 
-  // Sync GA4
-  if (settings.ga4Enabled && settings.ga4MeasurementId?.trim().startsWith('G-')) {
-    const mid = settings.ga4MeasurementId.trim();
+  // Sync GA4 (Google Analytics 4)
+  const rawGaId = settings.ga4MeasurementId?.trim();
+  if (settings.ga4Enabled && rawGaId) {
+    const mid = rawGaId.toUpperCase();
     if (!document.getElementById('ga4-script')) {
       const script = document.createElement('script');
       script.id = 'ga4-script';
@@ -86,13 +162,14 @@ export function syncThirdPartyScripts(settings: AnalyticsSettings = getAnalytics
       window.gtag('config', mid, {
         send_page_view: true,
       });
-      console.log(`[Analytics] GA4 initialized with ID: ${mid}`);
+      console.log(`[Analytics] Google Analytics 4 (GA4) initialisé avec l'ID: ${mid}`);
     }
   }
 
   // Sync Heatmaps (Microsoft Clarity or Hotjar)
-  if (settings.heatmapsEnabled && settings.heatmapProjectId?.trim()) {
-    const pid = settings.heatmapProjectId.trim();
+  const rawHeatmapId = settings.heatmapProjectId?.trim();
+  if (settings.heatmapsEnabled && rawHeatmapId) {
+    const pid = rawHeatmapId;
     if (settings.heatmapProvider === 'clarity' && !document.getElementById('clarity-script')) {
       const script = document.createElement('script');
       script.id = 'clarity-script';
@@ -105,7 +182,7 @@ export function syncThirdPartyScripts(settings: AnalyticsSettings = getAnalytics
         })(window, document, "clarity", "script", "${pid}");
       `;
       document.head.appendChild(script);
-      console.log(`[Analytics] Clarity initialized with Project ID: ${pid}`);
+      console.log(`[Analytics] Microsoft Clarity initialisé avec Project ID: ${pid}`);
     } else if (settings.heatmapProvider === 'hotjar' && !document.getElementById('hotjar-script')) {
       const script = document.createElement('script');
       script.id = 'hotjar-script';
@@ -121,7 +198,7 @@ export function syncThirdPartyScripts(settings: AnalyticsSettings = getAnalytics
         })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
       `;
       document.head.appendChild(script);
-      console.log(`[Analytics] Hotjar initialized with Site ID: ${pid}`);
+      console.log(`[Analytics] Hotjar initialisé avec Site ID: ${pid}`);
     }
   }
 
@@ -328,3 +405,55 @@ export function clearAnalyticsData(): void {
     console.error(e);
   }
 }
+
+// 7. Initialize Analytics at Application Boot
+export function initAnalytics(): void {
+  if (typeof window === 'undefined') return;
+
+  // Immediately synchronize scripts from env or cached settings
+  try {
+    const current = getAnalyticsSettings();
+    syncThirdPartyScripts(current);
+  } catch (e) {
+    console.warn('[Analytics] Initialization notice:', e);
+  }
+
+  // Fetch runtime configuration from server (/api/analytics-config) if available
+  fetch('/api/analytics-config')
+    .then((res) => (res.ok ? res.json() : null))
+    .then((data) => {
+      if (data && (data.gaMeasurementId || data.clarityProjectId)) {
+        applyServerAnalyticsConfig({
+          gaMeasurementId: data.gaMeasurementId,
+          clarityProjectId: data.clarityProjectId,
+        });
+      }
+    })
+    .catch(() => {});
+}
+
+// 8. Dynamically apply runtime configuration from server
+export function applyServerAnalyticsConfig(config: {
+  gaMeasurementId?: string;
+  clarityProjectId?: string;
+}): void {
+  if (typeof window === 'undefined' || !config) return;
+
+  const currentEnv = window.__TULIP_ENV__ || {};
+  let changed = false;
+
+  if (config.gaMeasurementId && config.gaMeasurementId !== currentEnv.VITE_GA_MEASUREMENT_ID) {
+    currentEnv.VITE_GA_MEASUREMENT_ID = config.gaMeasurementId;
+    changed = true;
+  }
+  if (config.clarityProjectId && config.clarityProjectId !== currentEnv.VITE_CLARITY_PROJECT_ID) {
+    currentEnv.VITE_CLARITY_PROJECT_ID = config.clarityProjectId;
+    changed = true;
+  }
+
+  if (changed) {
+    window.__TULIP_ENV__ = currentEnv;
+    syncThirdPartyScripts(getAnalyticsSettings());
+  }
+}
+

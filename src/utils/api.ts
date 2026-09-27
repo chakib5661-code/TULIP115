@@ -18,6 +18,10 @@ export interface SyncDataResponse {
   customerUsers: CustomerUser[];
   adBanners: AdBanner[];
   storeSettings: StoreSettings;
+  analyticsConfig?: {
+    gaMeasurementId?: string;
+    clarityProjectId?: string;
+  };
   lastUpdated: string;
   serverTime: string;
 }
@@ -572,4 +576,48 @@ export async function saveTelegramSettings(settings: {
     return { success: false, error: err.message || 'Erreur réseau.' };
   }
 }
+
+export async function checkSupabaseStatus(): Promise<{
+  success: boolean;
+  configured: boolean;
+  connected: boolean;
+  url?: string;
+  hasStateTable?: boolean;
+  details?: string;
+  error?: string;
+}> {
+  try {
+    const res = await fetch('/api/supabase/status');
+    const data = await res.json();
+    return data;
+  } catch (err: any) {
+    return {
+      success: false,
+      configured: false,
+      connected: false,
+      error: err?.message || 'Erreur lors de la vérification de Supabase',
+    };
+  }
+}
+
+export async function syncDatabaseToSupabase(): Promise<{
+  success: boolean;
+  message?: string;
+  error?: string;
+}> {
+  try {
+    const res = await fetch('/api/supabase/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const data = await res.json();
+    return data;
+  } catch (err: any) {
+    return {
+      success: false,
+      error: err?.message || 'Erreur de connexion lors du push vers Supabase',
+    };
+  }
+}
+
 

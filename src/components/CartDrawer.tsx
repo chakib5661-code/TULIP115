@@ -127,14 +127,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       >
         <div className="w-full sm:w-[480px] sm:max-w-md bg-white shadow-2xl flex flex-col justify-between h-full max-h-screen">
           {/* Header */}
-          <div className="p-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+          <div className="p-4 bg-gradient-to-r from-[#500428] via-[#70083b] to-[#9f0e4e] text-white flex items-center justify-between border-b border-[#500428] shadow-xs">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-amber-500 text-slate-950 font-black">
-                <ShoppingBag className="w-5 h-5" />
+              <div className="p-2 rounded-xl bg-white/20 text-white font-black border border-white/25 shadow-xs">
+                <ShoppingBag className="w-5 h-5 text-rose-100" />
               </div>
               <div>
-                <h2 className="text-base font-bold">{t.cartTitle}</h2>
-                <p className="text-xs text-slate-400">
+                <h2 className="text-base font-bold text-white tracking-tight">{t.cartTitle}</h2>
+                <p className="text-xs text-rose-200">
                   {items.length} {t.orderItemsCount}
                 </p>
               </div>
@@ -144,7 +144,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+                className="p-1.5 rounded-lg text-rose-200 hover:text-white hover:bg-white/10 transition cursor-pointer"
                 aria-label="Fermer"
                 title="Fermer (Échap)"
               >
@@ -154,17 +154,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           </div>
 
           {/* Navigation Tabs between Current Cart & Saved Pre-orders */}
-          <div className="flex border-b border-slate-200 bg-slate-100 p-1">
+          <div className="flex border-b border-rose-100 bg-rose-50/70 p-1">
             <button
               type="button"
               onClick={() => setActiveTab('cart')}
               className={`flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer ${
                 activeTab === 'cart'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-[#9f0e4e] shadow-xs font-black'
+                  : 'text-slate-600 hover:text-[#70083b]'
               }`}
             >
-              <ShoppingBag className="w-3.5 h-3.5" />
+              <ShoppingBag className="w-3.5 h-3.5 text-[#9f0e4e]" />
               <span>
                 {t.cartTabActive} ({items.length})
               </span>
@@ -174,14 +174,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               onClick={() => setActiveTab('saved')}
               className={`flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer ${
                 activeTab === 'saved'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-[#9f0e4e] shadow-xs font-black'
+                  : 'text-slate-600 hover:text-[#70083b]'
               }`}
             >
-              <Bookmark className="w-3.5 h-3.5 text-amber-600" />
+              <Bookmark className="w-3.5 h-3.5 text-[#9f0e4e]" />
               <span>{t.cartTabSaved}</span>
               {savedPreorders.length > 0 && (
-                <span className="px-1.5 py-0.2 bg-amber-500 text-slate-950 rounded-full text-[10px] font-black">
+                <span className="px-1.5 py-0.2 bg-[#9f0e4e] text-white rounded-full text-[10px] font-black">
                   {savedPreorders.length}
                 </span>
               )}
@@ -585,23 +585,23 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   </span>
                 </div>
               ) : (
-                <div className="p-3 bg-amber-50 rounded-2xl border border-amber-200 text-xs space-y-2">
+                <div className="p-3 bg-rose-50/80 rounded-2xl border border-rose-200/90 text-xs space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-amber-950 flex items-center gap-1.5">
-                      <Lock className="w-3.5 h-3.5 text-amber-700" />
+                    <span className="font-bold text-[#70083b] flex items-center gap-1.5">
+                      <Lock className="w-3.5 h-3.5 text-[#9f0e4e]" />
                       {t.pricesLocked}
                     </span>
                     {onRequireLogin && (
                       <button
                         type="button"
                         onClick={onRequireLogin}
-                        className="text-amber-900 font-black hover:underline cursor-pointer bg-amber-200/80 px-2 py-0.5 rounded-md text-[11px]"
+                        className="text-white font-black hover:opacity-90 cursor-pointer bg-[#9f0e4e] px-2.5 py-0.5 rounded-md text-[11px] shadow-xs"
                       >
                         {t.loginBtn}
                       </button>
                     )}
                   </div>
-                  <p className="text-[11px] text-amber-900/90 leading-relaxed">
+                  <p className="text-[11px] text-[#880e4f] leading-relaxed">
                     {t.proformaNotice}
                   </p>
                 </div>
@@ -613,15 +613,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsNamingDraft(true)}
-                    className="w-full py-2 px-3 rounded-xl bg-slate-200/80 hover:bg-slate-300 text-slate-800 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer border border-slate-300"
+                    className="w-full py-2 px-3 rounded-xl bg-rose-50/60 hover:bg-rose-100/70 text-[#70083b] font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer border border-rose-200/80"
                   >
-                    <Bookmark className="w-3.5 h-3.5 text-amber-700" />
+                    <Bookmark className="w-3.5 h-3.5 text-[#9f0e4e]" />
                     <span>{t.saveForLaterBtn}</span>
                   </button>
                 ) : (
-                  <div className="p-2.5 bg-white border border-amber-300 rounded-xl space-y-2 shadow-xs">
+                  <div className="p-2.5 bg-white border border-rose-300 rounded-xl space-y-2 shadow-xs">
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="font-bold text-slate-700">Nommer ce brouillon :</span>
+                      <span className="font-bold text-[#70083b]">Nommer ce brouillon :</span>
                       <button
                         type="button"
                         onClick={() => setIsNamingDraft(false)}
@@ -636,12 +636,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         value={draftLabel}
                         onChange={(e) => setDraftLabel(e.target.value)}
                         placeholder="Ex : Commande Oud Mars 2026..."
-                        className="flex-1 px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-hidden focus:border-amber-500"
+                        className="flex-1 px-2.5 py-1.5 text-xs border border-rose-200 rounded-lg focus:outline-hidden focus:border-[#9f0e4e]"
                       />
                       <button
                         type="button"
                         onClick={handleSaveForLater}
-                        className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg transition cursor-pointer shadow-xs"
+                        className="px-3 py-1.5 bg-[#9f0e4e] hover:bg-[#70083b] text-white font-bold text-xs rounded-lg transition cursor-pointer shadow-xs"
                       >
                         Enregistrer
                       </button>
@@ -658,7 +658,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   id="btn-proceed-preorder"
                   type="button"
                   onClick={onProceedToCheckout}
-                  className="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-sm flex items-center justify-center gap-2 transition shadow-lg hover:shadow-xl cursor-pointer"
+                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#70083b] via-[#9f0e4e] to-[#c2185b] hover:opacity-95 text-white font-black text-sm flex items-center justify-center gap-2 transition shadow-lg hover:shadow-xl cursor-pointer"
                 >
                   <span>{t.proceedToPreorderBtn}</span>
                   <ArrowRight className="w-4 h-4" />
@@ -670,9 +670,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     id="btn-request-proforma"
                     type="button"
                     onClick={onProceedToProforma || onProceedToCheckout}
-                    className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 hover:shadow-xl transition cursor-pointer"
+                    className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#70083b] via-[#9f0e4e] to-[#c2185b] hover:opacity-95 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-rose-950/20 hover:shadow-xl transition cursor-pointer"
                   >
-                    <FileText className="w-4 h-4 text-slate-950" />
+                    <FileText className="w-4 h-4 text-white" />
                     <span>{t.requestProformaBtn}</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>

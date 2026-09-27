@@ -95,11 +95,11 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 bg-slate-900 border-b border-slate-800 text-white shadow-md transition-all" dir={isRtl ? 'rtl' : 'ltr'}>
+    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-rose-100/90 text-slate-800 shadow-xs transition-all" dir={isRtl ? 'rtl' : 'ltr'}>
       {/* Offline Status Bar */}
       {!isOnline && (
-        <div className="bg-amber-500 text-slate-950 px-3 py-1.5 text-xs font-bold flex items-center justify-center gap-2 border-b border-amber-600 shadow-xs">
-          <WifiOff className="w-3.5 h-3.5 text-slate-950 shrink-0" />
+        <div className="bg-gradient-to-r from-[#70083b] to-[#9f0e4e] text-white px-3 py-1.5 text-xs font-bold flex items-center justify-center gap-2 border-b border-[#5a052e] shadow-xs">
+          <WifiOff className="w-3.5 h-3.5 text-rose-200 shrink-0" />
           <span>
             {isRtl
               ? `الوضع غير المتصل نشط • الكتالوج والصور (${cachedImagesCount > 0 ? `${cachedImagesCount} صورة محفوظة` : 'جاهزة'}) متاحة للطلب دون إنترنت`
@@ -108,22 +108,22 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       )}
       {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex items-center justify-between gap-3">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-3">
         {/* Brand & Tulip Logo */}
         <div className="flex items-center gap-3">
-          <TulipLogo variant="horizontal" size="md" />
+          <TulipLogo variant="horizontal" size="md" theme="light" />
         </div>
 
         {/* Product Family Filter Navigation (Desktop only) */}
-        <div className="hidden lg:flex items-center bg-slate-800/90 p-1 rounded-xl border border-slate-700">
+        <div className="hidden lg:flex items-center bg-rose-50/70 p-1 rounded-xl border border-rose-100/90">
           <button
             id="nav-family-all"
             type="button"
             onClick={() => onSelectFamily('all')}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
+            className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
               activeFamily === 'all'
-                ? 'bg-amber-500 text-slate-950 font-black shadow-sm'
-                : 'text-slate-300 hover:text-white hover:bg-slate-700/60'
+                ? 'bg-gradient-to-r from-[#70083b] to-[#9f0e4e] text-white font-black shadow-xs'
+                : 'text-slate-700 hover:text-[#9f0e4e] hover:bg-white/80'
             }`}
           >
             {t.allProducts}
@@ -132,23 +132,23 @@ export const Header: React.FC<HeaderProps> = ({
             id="nav-family-extrait"
             type="button"
             onClick={() => onSelectFamily('Extrait')}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer ${
+            className={`px-3.5 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
               activeFamily === 'Extrait'
-                ? 'bg-amber-500 text-slate-950 font-black shadow-sm'
-                : 'text-slate-300 hover:text-white hover:bg-slate-700/60'
+                ? 'bg-gradient-to-r from-[#70083b] to-[#9f0e4e] text-white font-black shadow-xs'
+                : 'text-slate-700 hover:text-[#9f0e4e] hover:bg-white/80'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+            <Sparkles className="w-3.5 h-3.5 text-rose-300" />
             {t.extraitsTitle}
           </button>
           <button
             id="nav-family-flacon"
             type="button"
             onClick={() => onSelectFamily('Flacon')}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer ${
+            className={`px-3.5 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
               activeFamily === 'Flacon'
-                ? 'bg-indigo-600 text-white shadow-sm font-bold'
-                : 'text-slate-300 hover:text-white hover:bg-slate-700/60'
+                ? 'bg-gradient-to-r from-[#880e4f] to-[#be185d] text-white shadow-xs font-black'
+                : 'text-slate-700 hover:text-[#9f0e4e] hover:bg-white/80'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -158,10 +158,10 @@ export const Header: React.FC<HeaderProps> = ({
             id="nav-family-accessoire"
             type="button"
             onClick={() => onSelectFamily('Accessoire')}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer ${
+            className={`px-3.5 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
               activeFamily === 'Accessoire'
-                ? 'bg-teal-600 text-white shadow-sm font-bold'
-                : 'text-slate-300 hover:text-white hover:bg-slate-700/60'
+                ? 'bg-gradient-to-r from-[#70083b] to-[#9f0e4e] text-white shadow-xs font-black'
+                : 'text-slate-700 hover:text-[#9f0e4e] hover:bg-white/80'
             }`}
           >
             <Wrench className="w-3.5 h-3.5" />
@@ -173,16 +173,16 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-1.5 sm:gap-2.5">
           {/* CUSTOMER AUTHENTICATION STATUS */}
           {currentCustomer ? (
-            <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-800/90 border border-amber-500/40 px-2 sm:px-3 py-1.5 rounded-xl text-xs">
-              <User className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span className="hidden sm:inline text-amber-300 font-bold max-w-[100px] sm:max-w-[140px] truncate">
+            <div className="flex items-center gap-1.5 sm:gap-2 bg-pink-50 border border-pink-200/90 px-2 sm:px-3 py-1.5 rounded-xl text-xs">
+              <User className="w-3.5 h-3.5 text-[#9f0e4e] shrink-0" />
+              <span className="hidden sm:inline text-[#70083b] font-bold max-w-[100px] sm:max-w-[140px] truncate">
                 {currentCustomer.username}
               </span>
               {onLogoutCustomer && (
                 <button
                   type="button"
                   onClick={onLogoutCustomer}
-                  className="p-1 text-slate-400 hover:text-rose-400 rounded hover:bg-slate-750 transition cursor-pointer"
+                  className="p-1 text-slate-400 hover:text-rose-600 rounded hover:bg-pink-100/60 transition cursor-pointer"
                   title={t.logoutBtn}
                 >
                   <LogOut className="w-3.5 h-3.5" />
@@ -196,19 +196,19 @@ export const Header: React.FC<HeaderProps> = ({
                   <button
                     type="button"
                     onClick={() => onOpenCustomerAuth('login')}
-                    className="px-2.5 sm:px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-amber-300 hover:text-amber-200 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                    className="px-2.5 sm:px-3 py-2 rounded-xl bg-pink-50 hover:bg-pink-100 text-[#880e4f] border border-pink-200 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
                     title={t.loginBtn}
                   >
-                    <Lock className="w-3.5 h-3.5 text-amber-400" />
+                    <Lock className="w-3.5 h-3.5 text-[#9f0e4e]" />
                     <span className="hidden sm:inline">{t.loginBtn}</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => onOpenCustomerAuth('register')}
-                    className="hidden md:flex px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700 text-xs font-semibold items-center gap-1.5 transition cursor-pointer"
+                    className="hidden md:flex px-3 py-2 rounded-xl bg-white hover:bg-rose-50 text-slate-700 hover:text-[#880e4f] border border-rose-200 text-xs font-bold items-center gap-1.5 transition cursor-pointer shadow-2xs"
                   >
-                    <Building2 className="w-3.5 h-3.5 text-amber-400" />
+                    <Building2 className="w-3.5 h-3.5 text-[#9f0e4e]" />
                     <span>{t.requestAccessBtn}</span>
                   </button>
                 </>
@@ -223,13 +223,13 @@ export const Header: React.FC<HeaderProps> = ({
                 id="btn-admin-orders"
                 type="button"
                 onClick={onOpenOrders}
-                className="relative px-2.5 py-2 text-xs font-medium rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 transition flex items-center gap-1.5 cursor-pointer"
+                className="relative px-2.5 py-2 text-xs font-bold rounded-xl bg-rose-50 hover:bg-rose-100 text-[#880e4f] border border-rose-200 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
                 title="Consulter les commandes reçues"
               >
-                <PackageCheck className="w-4 h-4 text-emerald-400" />
+                <PackageCheck className="w-4 h-4 text-[#9f0e4e]" />
                 <span className="hidden sm:inline">Commandes</span>
                 {ordersCount > 0 && (
-                  <span className="px-1.5 py-0.2 bg-emerald-600 text-white rounded-full text-[10px] font-bold">
+                  <span className="px-1.5 py-0.2 bg-[#9f0e4e] text-white rounded-full text-[10px] font-bold">
                     {ordersCount}
                   </span>
                 )}
@@ -239,7 +239,7 @@ export const Header: React.FC<HeaderProps> = ({
                 id="btn-excel-sync"
                 type="button"
                 onClick={onOpenExcelSync}
-                className="px-2.5 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition flex items-center gap-1.5 border border-emerald-500/50 cursor-pointer"
+                className="px-2.5 py-2 text-xs font-semibold rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white shadow-xs transition flex items-center gap-1.5 border border-emerald-600 cursor-pointer"
                 title="Importer le fichier Excel POS"
               >
                 <FileSpreadsheet className="w-4 h-4 text-emerald-100" />
@@ -248,16 +248,16 @@ export const Header: React.FC<HeaderProps> = ({
             </>
           )}
 
-          {/* ORDER TRACKING BUTTON (Placed Next to Cart Button as requested) */}
+          {/* ORDER TRACKING BUTTON (Placed Next to Cart Button) */}
           {onOpenOrderTracking && (
             <button
               id="btn-header-track-order"
               type="button"
               onClick={onOpenOrderTracking}
-              className="px-2.5 sm:px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+              className="px-2.5 sm:px-3 py-2 rounded-xl bg-white hover:bg-rose-50 text-slate-700 hover:text-[#880e4f] border border-rose-200/90 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
               title={t.trackOrderBtn}
             >
-              <Truck className="w-4 h-4 text-amber-400" />
+              <Truck className="w-4 h-4 text-[#9f0e4e]" />
               <span className="hidden sm:inline">{t.trackOrderBtn}</span>
             </button>
           )}
@@ -267,51 +267,49 @@ export const Header: React.FC<HeaderProps> = ({
             id="btn-open-cart"
             type="button"
             onClick={onOpenCart}
-            className="relative px-2.5 sm:px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center gap-1.5 sm:gap-2 transition shadow-md cursor-pointer"
+            className="relative px-3 sm:px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#70083b] via-[#9f0e4e] to-[#c2185b] hover:opacity-95 text-white font-black text-xs flex items-center gap-1.5 sm:gap-2 transition shadow-md active:scale-95 cursor-pointer"
             title={t.cartBtn}
           >
             <ShoppingBag className="w-4 h-4" />
             <span className="hidden sm:inline">{t.cartBtn}</span>
             {cartCount > 0 ? (
               <span className="flex items-center gap-1">
-                <span className="bg-slate-950 text-amber-300 px-1.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold">
+                <span className="bg-white text-[#880e4f] px-1.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-black">
                   {cartCount}
                 </span>
                 {isPricesVisible && (
-                  <span className="hidden md:inline text-[11px] font-bold opacity-90 font-mono">
+                  <span className="hidden md:inline text-[11px] font-bold opacity-95 font-mono">
                     ({formatDZD(cartTotalDA)})
                   </span>
                 )}
               </span>
             ) : (
-              <span className="hidden sm:inline text-[11px] opacity-75 font-normal">(0)</span>
+              <span className="hidden sm:inline text-[11px] opacity-80 font-normal">(0)</span>
             )}
           </button>
         </div>
       </div>
 
-      {/* Top navigation filter bar is now hidden on mobile version as requested */}
-
-      {/* DEDICATED SUB-HEADER BAR: SWITCH MODE CENTERED (Smoothly hides on scroll down, keeps search section prominent) */}
+      {/* DEDICATED SUB-HEADER BAR: SWITCH MODE CENTERED */}
       {onToggleInterface && (
         <div
-          className={`bg-slate-950 border-t border-slate-800 flex items-center justify-center relative transition-all duration-300 overflow-hidden ${
+          className={`bg-gradient-to-r from-[#fdf8fa] via-[#faf0f4] to-[#fbf7f9] border-t border-rose-100/90 flex items-center justify-center relative transition-all duration-300 overflow-hidden ${
             isScrolledDown ? 'max-h-0 py-0 opacity-0 border-transparent pointer-events-none' : 'max-h-16 py-2 opacity-100'
           }`}
         >
           {/* Centered Mode Switcher */}
-          <div className="flex items-center bg-slate-900 border border-slate-750 rounded-xl p-1 text-xs font-bold shadow-inner">
+          <div className="flex items-center bg-white border border-rose-200/80 rounded-xl p-1 text-xs font-bold shadow-2xs">
             <button
               type="button"
               onClick={() => onToggleInterface('showroom')}
               className={`px-3 sm:px-4 py-1.5 rounded-lg flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap ${
                 currentInterface === 'showroom'
-                  ? 'bg-amber-500 text-slate-950 font-black shadow-xs'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-gradient-to-r from-[#70083b] to-[#9f0e4e] text-white font-black shadow-xs'
+                  : 'text-slate-600 hover:text-[#9f0e4e]'
               }`}
               title={t.showroomMode}
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+              <Sparkles className="w-3.5 h-3.5 text-rose-200 shrink-0" />
               <span>{t.showroomMode}</span>
             </button>
             <button
@@ -319,8 +317,8 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => onToggleInterface('quick')}
               className={`px-3 sm:px-4 py-1.5 rounded-lg flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap ${
                 currentInterface === 'quick'
-                  ? 'bg-indigo-600 text-white font-bold shadow-xs'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-gradient-to-r from-[#880e4f] to-[#be185d] text-white font-black shadow-xs'
+                  : 'text-slate-600 hover:text-[#9f0e4e]'
               }`}
               title={t.quickOrderMode}
             >
@@ -331,13 +329,13 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Unobtrusive Admin indicator if active (positioned on right side) */}
           {isAdminMode && (
-            <div className="absolute right-3 sm:right-4 flex items-center gap-2 bg-emerald-950/80 border border-emerald-500/40 px-2.5 py-1 rounded-lg text-[11px] text-emerald-300">
+            <div className="absolute right-3 sm:right-4 flex items-center gap-2 bg-rose-50 border border-rose-300/80 px-2.5 py-1 rounded-lg text-[11px] text-[#880e4f] font-bold">
               <span className="hidden sm:inline">Admin Actif</span>
               {onToggleAdminMode && (
                 <button
                   type="button"
                   onClick={onToggleAdminMode}
-                  className="text-emerald-400 hover:text-white flex items-center gap-1 cursor-pointer"
+                  className="text-rose-600 hover:text-rose-900 flex items-center gap-1 cursor-pointer"
                   title="Masquer mode admin"
                 >
                   <LogOut className="w-3 h-3" />

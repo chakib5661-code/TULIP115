@@ -69,17 +69,22 @@
             e.preventDefault();
           }
         }, true);
+
+        // Early recovery if a new deployment removed old chunks while user is browsing
+        window.addEventListener('vite:preloadError', function(e) {
+          var now = Date.now();
+          var last = Number(sessionStorage.getItem('tulip_last_pwa_reload') || 0);
+          if (now - last > 12000) {
+            sessionStorage.setItem('tulip_last_pwa_reload', String(now));
+            window.location.reload();
+          }
+        });
       })();
     </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-        navigator.serviceWorker.register('/sw.js').catch(function() {});
-      }
-    </script>
   </body>
 </html>
 

@@ -195,12 +195,12 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
         )}
 
         {/* Main Modal Card */}
-        <div className="bg-slate-900 border border-amber-500/40 rounded-2xl sm:rounded-3xl shadow-2xl w-full overflow-hidden relative text-white max-h-[92vh] flex flex-col">
+        <div className="bg-gradient-to-b from-[#2a0416] via-[#1a020d] to-slate-950 border border-[#70083b]/70 rounded-2xl sm:rounded-3xl shadow-2xl w-full overflow-hidden relative text-white max-h-[92vh] flex flex-col">
           {/* Floating Close Button */}
           <button
             type="button"
             onClick={handleClose}
-            className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 w-9 h-9 rounded-full bg-slate-950/80 hover:bg-slate-950 text-slate-300 hover:text-white border border-slate-700 flex items-center justify-center transition shadow-lg cursor-pointer"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 w-9 h-9 rounded-full bg-slate-950/80 hover:bg-slate-950 text-slate-300 hover:text-white border border-[#70083b]/60 flex items-center justify-center transition shadow-lg cursor-pointer"
             aria-label="Fermer"
             id="ad-popup-close-btn"
           >
@@ -209,8 +209,8 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
 
           {/* SLIDER PAGINATION BADGE (when multiple popups exist) */}
           {bannersList.length > 1 && (
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 bg-slate-950/85 backdrop-blur-md px-3 py-1 rounded-full border border-amber-500/40 text-[11px] font-bold text-amber-300 flex items-center gap-1.5 shadow-md">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 bg-[#2a0416]/90 backdrop-blur-md px-3 py-1 rounded-full border border-[#c2185b]/40 text-[11px] font-bold text-rose-200 flex items-center gap-1.5 shadow-md">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping" />
               <span>
                 Popup {currentSlideIndex + 1} / {bannersList.length}
               </span>
@@ -263,7 +263,7 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
                           handlePrevSlide();
                         }}
                         whileTap={{ scale: 0.85 }}
-                        className="pointer-events-auto w-8 h-8 rounded-full bg-slate-950/80 text-amber-400 border border-amber-500/50 flex items-center justify-center shadow-lg"
+                        className="pointer-events-auto w-8 h-8 rounded-full bg-slate-950/80 text-rose-300 border border-rose-500/50 flex items-center justify-center shadow-lg"
                         aria-label="Précédent"
                         id="ad-popup-mobile-prev"
                       >
@@ -276,7 +276,7 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
                           handleNextSlide();
                         }}
                         whileTap={{ scale: 0.85 }}
-                        className="pointer-events-auto w-8 h-8 rounded-full bg-slate-950/80 text-amber-400 border border-amber-500/50 flex items-center justify-center shadow-lg"
+                        className="pointer-events-auto w-8 h-8 rounded-full bg-slate-950/80 text-rose-300 border border-rose-500/50 flex items-center justify-center shadow-lg"
                         aria-label="Suivant"
                         id="ad-popup-mobile-next"
                       >
@@ -287,7 +287,7 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
 
                   {/* Corner Badge */}
                   {currentAd.badgeText && (
-                    <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-amber-500 text-slate-950 font-black text-[10px] sm:text-xs tracking-wider uppercase shadow-lg border border-amber-400">
+                    <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-gradient-to-r from-[#9f0e4e] to-[#c2185b] text-white font-black text-[10px] sm:text-xs tracking-wider uppercase shadow-lg border border-rose-300/40">
                       <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
                       <span>{currentAd.badgeText}</span>
                     </div>
@@ -297,7 +297,7 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
                 {/* Ad Content */}
                 <div className="p-4 sm:p-6 pt-3 space-y-3.5 sm:space-y-4 overflow-y-auto flex-1">
                   <div>
-                    <span className="text-[11px] font-bold text-amber-400 tracking-wider uppercase block mb-1">
+                    <span className="text-[11px] font-bold text-rose-300 tracking-wider uppercase block mb-1">
                       Tulip Fragrance Company • Offre Exclusive
                     </span>
                     <h3 className="text-xl sm:text-2xl font-black text-white leading-snug">
@@ -315,11 +315,11 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-xs text-slate-400">
                         <span className="font-bold text-white flex items-center gap-1.5">
-                          <ShoppingBag className="w-3.5 h-3.5 text-amber-400" />
+                          <ShoppingBag className="w-3.5 h-3.5 text-rose-400" />
                           Produits sélectionnés ({targetProducts.length}) :
                         </span>
                         {targetProducts.length > 1 && (
-                          <span className="text-[11px] text-amber-400 font-semibold">
+                          <span className="text-[11px] text-rose-300 font-semibold">
                             Ajout individuel ou groupé
                           </span>
                         )}
@@ -357,7 +357,7 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
                                   <div className="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5">
                                     <span className="font-mono text-slate-300">{prod.code}</span>
                                     <span>•</span>
-                                    <span className="text-amber-400 font-bold">
+                                    <span className="text-rose-300 font-bold">
                                       {effectivePrice} DA {prod.family === 'Extrait' ? '/ 1g' : ''}
                                     </span>
                                     {hasDiscount && (
@@ -383,7 +383,7 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
                                   className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-sm ${
                                     isAdded
                                       ? 'bg-emerald-600 text-white cursor-default'
-                                      : 'bg-amber-500 hover:bg-amber-400 text-slate-950'
+                                      : 'bg-gradient-to-r from-[#9f0e4e] to-[#c2185b] hover:opacity-95 text-white'
                                   }`}
                                 >
                                   {isAdded ? (
@@ -413,10 +413,10 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
                         type="button"
                         onClick={handleAddAllProducts}
                         disabled={allAdded}
-                        className={`w-full sm:flex-1 py-3 px-4 rounded-xl text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg cursor-pointer transition ${
+                        className={`w-full sm:flex-1 py-3 px-4 rounded-xl text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg cursor-pointer transition ${
                           allAdded
-                            ? 'bg-emerald-500 text-white shadow-emerald-500/25'
-                            : 'bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-amber-500/25'
+                            ? 'bg-emerald-600 text-white shadow-emerald-500/25'
+                            : 'bg-gradient-to-r from-[#70083b] via-[#9f0e4e] to-[#c2185b] hover:opacity-95 shadow-rose-950/40'
                         }`}
                       >
                         {allAdded ? (
@@ -436,10 +436,10 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
                         type="button"
                         onClick={() => handleAddSingleProduct(targetProducts[0])}
                         disabled={addedProductIds.includes(targetProducts[0].id)}
-                        className={`w-full sm:flex-1 py-3 px-4 rounded-xl text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg cursor-pointer transition ${
+                        className={`w-full sm:flex-1 py-3 px-4 rounded-xl text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg cursor-pointer transition ${
                           addedProductIds.includes(targetProducts[0].id)
-                            ? 'bg-emerald-500 text-white shadow-emerald-500/25'
-                            : 'bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-amber-500/25'
+                            ? 'bg-emerald-600 text-white shadow-emerald-500/25'
+                            : 'bg-gradient-to-r from-[#70083b] via-[#9f0e4e] to-[#c2185b] hover:opacity-95 shadow-rose-950/40'
                         }`}
                       >
                         {addedProductIds.includes(targetProducts[0].id) ? (
@@ -458,7 +458,7 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
                       <button
                         type="button"
                         onClick={handleGeneralExplore}
-                        className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 cursor-pointer transition"
+                        className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-[#70083b] via-[#9f0e4e] to-[#c2185b] hover:opacity-95 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-rose-950/40 cursor-pointer transition"
                       >
                         <span>{currentAd.buttonText || 'Découvrir la Collection'}</span>
                         <ArrowRight className="w-4 h-4" />
@@ -481,7 +481,7 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
                         <button
                           type="button"
                           onClick={handlePrevSlide}
-                          className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-amber-400 text-xs font-bold flex items-center gap-1 transition cursor-pointer"
+                          className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-rose-300 text-xs font-bold flex items-center gap-1 transition cursor-pointer"
                         >
                           <ChevronLeft className="w-4 h-4" />
                           <span className="hidden sm:inline text-[11px]">Précédent</span>
@@ -499,7 +499,7 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
                               }}
                               className={`transition-all duration-300 rounded-full cursor-pointer ${
                                 idx === currentSlideIndex
-                                  ? 'w-7 h-2.5 bg-gradient-to-r from-amber-400 to-amber-500 shadow-sm shadow-amber-400/50'
+                                  ? 'w-7 h-2.5 bg-gradient-to-r from-[#9f0e4e] to-[#c2185b] shadow-sm shadow-rose-500/50'
                                   : 'w-2.5 h-2.5 bg-slate-700 hover:bg-slate-500'
                               }`}
                               title={`Glisser vers: ${b.title}`}
@@ -511,7 +511,7 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
                         <button
                           type="button"
                           onClick={handleNextSlide}
-                          className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-amber-400 text-xs font-bold flex items-center gap-1 transition cursor-pointer"
+                          className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-rose-300 text-xs font-bold flex items-center gap-1 transition cursor-pointer"
                         >
                           <span className="hidden sm:inline text-[11px]">Suivant</span>
                           <ChevronRight className="w-4 h-4" />
@@ -527,7 +527,7 @@ export const AdPopupModal: React.FC<AdPopupModalProps> = ({
                         type="checkbox"
                         checked={dontShowToday}
                         onChange={(e) => setDontShowToday(e.target.checked)}
-                        className="w-4 h-4 rounded-md border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500 cursor-pointer"
+                        className="w-4 h-4 rounded-md border-slate-700 bg-slate-950 text-[#9f0e4e] focus:ring-[#9f0e4e] cursor-pointer"
                       />
                       <span>Ne plus afficher aujourd'hui</span>
                     </label>

@@ -61,27 +61,27 @@ export const ProductFilter: React.FC<ProductFilterProps> = ({
 
   return (
     <div
-      className="sticky top-[58px] z-20 bg-white/95 backdrop-blur-md rounded-2xl p-3.5 sm:p-4 shadow-sm border border-slate-200 mb-4 sm:mb-6 space-y-3 transition-all"
+      className="sticky top-[58px] z-20 bg-white/95 backdrop-blur-md rounded-2xl p-3.5 sm:p-4 shadow-2xs border border-rose-100 mb-4 sm:mb-6 space-y-3 transition-all"
       dir={isRtl ? 'rtl' : 'ltr'}
     >
       {/* Top Flex Row: Search + Family Tabs + Quick Filters */}
       <div className="flex flex-col lg:flex-row gap-3 items-center justify-between">
         {/* Search Input - Matching Quick Order */}
         <div className="relative w-full lg:max-w-md">
-          <Search className={`w-4 h-4 text-slate-400 absolute ${isRtl ? 'right-3.5' : 'left-3.5'} top-1/2 -translate-y-1/2 pointer-events-none`} />
+          <Search className={`w-4 h-4 text-rose-400 absolute ${isRtl ? 'right-3.5' : 'left-3.5'} top-1/2 -translate-y-1/2 pointer-events-none`} />
           <input
             id="search-products-input"
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder={t.searchPlaceholder}
-            className={`w-full ${isRtl ? 'pr-9 pl-4' : 'pl-9 pr-4'} py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-hidden focus:border-amber-500 focus:bg-white transition`}
+            className={`w-full ${isRtl ? 'pr-9 pl-4' : 'pl-9 pr-4'} py-2 text-xs bg-rose-50/30 border border-rose-200/80 rounded-xl text-slate-900 focus:outline-hidden focus:border-[#9f0e4e] focus:ring-2 focus:ring-[#9f0e4e]/10 focus:bg-white transition`}
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => onSearchChange('')}
-              className={`absolute ${isRtl ? 'left-2.5' : 'right-2.5'} top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs cursor-pointer p-1`}
+              className={`absolute ${isRtl ? 'left-2.5' : 'right-2.5'} top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#9f0e4e] text-xs cursor-pointer p-1`}
               title="Effacer"
             >
               <X className="w-3.5 h-3.5" />
@@ -101,8 +101,8 @@ export const ProductFilter: React.FC<ProductFilterProps> = ({
             }}
             className={`px-3 py-1.5 text-xs font-bold rounded-xl transition cursor-pointer whitespace-nowrap ${
               selectedFamily === 'all' && !showOnlyFavorites && !showOnlyTopSellers
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                ? 'bg-gradient-to-r from-[#70083b] to-[#9f0e4e] text-white shadow-xs'
+                : 'bg-rose-50/60 text-slate-700 hover:bg-rose-100/60 hover:text-[#9f0e4e]'
             }`}
           >
             {t.filterAll} ({familyCounts.all})
@@ -118,13 +118,13 @@ export const ProductFilter: React.FC<ProductFilterProps> = ({
             }}
             className={`px-3 py-1.5 text-xs font-bold rounded-xl flex items-center gap-1 transition cursor-pointer whitespace-nowrap ${
               selectedFamily === 'Extrait' && !showOnlyFavorites && !showOnlyTopSellers
-                ? 'bg-amber-500 text-slate-950 font-black shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                ? 'bg-gradient-to-r from-[#70083b] to-[#9f0e4e] text-white shadow-xs'
+                : 'bg-rose-50/60 text-slate-700 hover:bg-rose-100/60 hover:text-[#9f0e4e]'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+            <Sparkles className="w-3.5 h-3.5 text-rose-300" />
             <span>{t.extraitsTitle.split(' ')[0]}</span>
-            <span className="text-[10px] opacity-75">({familyCounts.Extrait})</span>
+            <span className="text-[10px] opacity-80">({familyCounts.Extrait})</span>
           </button>
 
           {/* Flacons */}
@@ -137,13 +137,13 @@ export const ProductFilter: React.FC<ProductFilterProps> = ({
             }}
             className={`px-3 py-1.5 text-xs font-bold rounded-xl flex items-center gap-1 transition cursor-pointer whitespace-nowrap ${
               selectedFamily === 'Flacon' && !showOnlyFavorites && !showOnlyTopSellers
-                ? 'bg-indigo-600 text-white shadow-xs font-bold'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                ? 'bg-gradient-to-r from-[#880e4f] to-[#be185d] text-white shadow-xs font-black'
+                : 'bg-rose-50/60 text-slate-700 hover:bg-rose-100/60 hover:text-[#9f0e4e]'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
             <span>{t.flaconsTitle.split(' ')[0]}</span>
-            <span className="text-[10px] opacity-75">({familyCounts.Flacon})</span>
+            <span className="text-[10px] opacity-80">({familyCounts.Flacon})</span>
           </button>
 
           {/* Accessoires */}
@@ -157,13 +157,13 @@ export const ProductFilter: React.FC<ProductFilterProps> = ({
             }}
             className={`px-3 py-1.5 text-xs font-bold rounded-xl flex items-center gap-1 transition cursor-pointer whitespace-nowrap ${
               selectedFamily === 'Accessoire' && !showOnlyFavorites && !showOnlyTopSellers
-                ? 'bg-teal-600 text-white shadow-xs font-bold'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                ? 'bg-gradient-to-r from-[#70083b] to-[#9f0e4e] text-white shadow-xs font-black'
+                : 'bg-rose-50/60 text-slate-700 hover:bg-rose-100/60 hover:text-[#9f0e4e]'
             }`}
           >
             <Wrench className="w-3.5 h-3.5" />
             <span>{t.accessoriesTitle ? t.accessoriesTitle.split(' ')[0] : 'Accessoires'}</span>
-            <span className="text-[10px] opacity-75">({familyCounts.Accessoire ?? 0})</span>
+            <span className="text-[10px] opacity-80">({familyCounts.Accessoire ?? 0})</span>
           </button>
 
           {/* TOP SELLER Filter Toggle */}

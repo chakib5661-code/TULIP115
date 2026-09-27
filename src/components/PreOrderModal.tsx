@@ -171,23 +171,23 @@ export const PreOrderModal: React.FC<PreOrderModalProps> = ({
     >
       <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[92vh] border border-slate-100">
         {/* Modal Top Header */}
-        <div className="p-4 sm:p-5 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-[#500428] via-[#70083b] to-[#9f0e4e] text-white flex items-center justify-between border-b border-[#500428] shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30">
-              <FileText className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-2xl bg-white/20 text-white flex items-center justify-center border border-white/25 shadow-xs">
+              <FileText className="w-5 h-5 text-rose-100" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base sm:text-lg font-bold">
+                <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
                   {isProforma ? t.requestProformaTitle : t.preorderTitle}
                 </h3>
                 {isProforma && (
-                  <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black uppercase">
+                  <span className="px-2 py-0.5 rounded-full bg-white/25 text-white text-[10px] font-black uppercase border border-white/30">
                     Facture Proforma
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-rose-100 mt-0.5">
                 {isProforma
                   ? (lang === 'ar'
                       ? 'أدخل فقط اسمك ورقم هاتفك لإنشاء الفاتورة الشكلية الرسمية (PDF).'
@@ -200,7 +200,7 @@ export const PreOrderModal: React.FC<PreOrderModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+            className="p-1.5 rounded-lg text-rose-200 hover:text-white hover:bg-white/10 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -209,9 +209,9 @@ export const PreOrderModal: React.FC<PreOrderModalProps> = ({
         {/* Scrollable Form Body */}
         <form onSubmit={handleSubmit} className="p-4 sm:p-6 overflow-y-auto space-y-5 flex-1">
           {/* Quick Recap Banner */}
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="bg-rose-50/80 border border-rose-200/90 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
             <div>
-              <span className="text-amber-950 font-bold block">
+              <span className="text-[#70083b] font-bold block">
                 {isProforma ? 'Contenu de la demande de proforma :' : 'Récapitulatif de votre commande :'}
               </span>
               <span className="text-slate-600 mt-0.5 block">
@@ -221,16 +221,16 @@ export const PreOrderModal: React.FC<PreOrderModalProps> = ({
             <div className="text-right">
               {isPricesVisible ? (
                 <>
-                  <span className="text-lg font-black text-amber-950 block">
+                  <span className="text-lg font-black text-[#9f0e4e] block">
                     {formatDZD(totalAmountDA)}
                   </span>
-                  <span className="text-[11px] text-amber-800 font-semibold">
+                  <span className="text-[11px] text-[#880e4f] font-semibold">
                     {isProforma ? 'Devis Proforma officiel avec réservation 48H' : 'Paiement à la livraison / retrait'}
                   </span>
                 </>
               ) : (
-                <div className="flex items-center gap-1 text-amber-900 font-bold text-xs bg-amber-100/80 px-2.5 py-1 rounded-lg border border-amber-300">
-                  <Lock className="w-3.5 h-3.5 text-amber-700" />
+                <div className="flex items-center gap-1 text-[#70083b] font-bold text-xs bg-rose-100/80 px-2.5 py-1 rounded-lg border border-rose-300">
+                  <Lock className="w-3.5 h-3.5 text-[#9f0e4e]" />
                   <span>{t.totalHiddenNotice}</span>
                 </div>
               )}
@@ -576,7 +576,7 @@ export const PreOrderModal: React.FC<PreOrderModalProps> = ({
             <button
               type="button"
               onClick={handleSubmit}
-              className="w-1/2 sm:w-auto px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl transition shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+              className="w-1/2 sm:w-auto px-5 py-2.5 bg-gradient-to-r from-[#70083b] via-[#9f0e4e] to-[#c2185b] hover:opacity-95 text-white font-black text-xs rounded-xl transition shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <span>{isProforma ? t.confirmProformaBtn : t.confirmPreorderBtn}</span>
             </button>

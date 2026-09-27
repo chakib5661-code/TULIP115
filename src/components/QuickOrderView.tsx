@@ -172,26 +172,26 @@ export const QuickOrderView: React.FC<QuickOrderViewProps> = ({
   const totalCartCount = cart.reduce((sum, item) => sum + (item?.quantity || 0), 0);
 
   return (
-    <div className="min-h-screen bg-slate-100 py-4 sm:py-6 pb-28" dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-[#faf7f9] py-4 sm:py-6 pb-28" dir={isRtl ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-3 sm:px-6">
         {/* Filter Controls Bar */}
-        <div className="sticky top-[58px] z-20 bg-white/95 backdrop-blur-md rounded-2xl p-3.5 sm:p-4 shadow-sm border border-slate-200 mb-4 sm:mb-6 space-y-3 transition-all">
+        <div className="sticky top-[58px] z-20 bg-white/95 backdrop-blur-md rounded-2xl p-3.5 sm:p-4 shadow-2xs border border-rose-100 mb-4 sm:mb-6 space-y-3 transition-all">
           <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
             {/* Search Input */}
             <div className="relative w-full sm:max-w-md">
-              <Search className={`w-4 h-4 text-slate-400 absolute ${isRtl ? 'right-3.5' : 'left-3.5'} top-1/2 -translate-y-1/2`} />
+              <Search className={`w-4 h-4 text-rose-400 absolute ${isRtl ? 'right-3.5' : 'left-3.5'} top-1/2 -translate-y-1/2`} />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder={t.searchPlaceholder}
-                className={`w-full ${isRtl ? 'pr-9 pl-4' : 'pl-9 pr-4'} py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-hidden focus:border-amber-500 focus:bg-white transition`}
+                className={`w-full ${isRtl ? 'pr-9 pl-4' : 'pl-9 pr-4'} py-2 text-xs bg-rose-50/30 border border-rose-200/80 rounded-xl text-slate-900 focus:outline-hidden focus:border-[#9f0e4e] focus:ring-2 focus:ring-[#9f0e4e]/10 focus:bg-white transition`}
               />
               {search && (
                 <button
                   type="button"
                   onClick={() => setSearch('')}
-                  className={`absolute ${isRtl ? 'left-2.5' : 'right-2.5'} top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs cursor-pointer`}
+                  className={`absolute ${isRtl ? 'left-2.5' : 'right-2.5'} top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#9f0e4e] text-xs cursor-pointer`}
                 >
                   ✕
                 </button>
@@ -205,8 +205,8 @@ export const QuickOrderView: React.FC<QuickOrderViewProps> = ({
                 onClick={() => handleSelectFamily('all')}
                 className={`px-3 py-1.5 text-xs font-bold rounded-xl transition cursor-pointer whitespace-nowrap ${
                   activeFamily === 'all' && !favoritesOnly
-                    ? 'bg-slate-900 text-white'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-gradient-to-r from-[#70083b] to-[#9f0e4e] text-white shadow-xs'
+                    : 'bg-rose-50/60 text-slate-700 hover:bg-rose-100/60 hover:text-[#9f0e4e]'
                 }`}
               >
                 {t.filterAll}
@@ -216,11 +216,11 @@ export const QuickOrderView: React.FC<QuickOrderViewProps> = ({
                 onClick={() => handleSelectFamily('Extrait')}
                 className={`px-3 py-1.5 text-xs font-bold rounded-xl flex items-center gap-1 transition cursor-pointer whitespace-nowrap ${
                   activeFamily === 'Extrait' && !favoritesOnly
-                    ? 'bg-amber-500 text-slate-950 font-black shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-gradient-to-r from-[#70083b] to-[#9f0e4e] text-white shadow-xs'
+                    : 'bg-rose-50/60 text-slate-700 hover:bg-rose-100/60 hover:text-[#9f0e4e]'
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+                <Sparkles className="w-3.5 h-3.5 text-rose-300" />
                 {t.extraitsTitle.split(' ')[0]}
               </button>
               <button
@@ -228,8 +228,8 @@ export const QuickOrderView: React.FC<QuickOrderViewProps> = ({
                 onClick={() => handleSelectFamily('Flacon')}
                 className={`px-3 py-1.5 text-xs font-bold rounded-xl flex items-center gap-1 transition cursor-pointer whitespace-nowrap ${
                   activeFamily === 'Flacon' && !favoritesOnly && !topSellersOnly
-                    ? 'bg-indigo-600 text-white shadow-xs font-bold'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-gradient-to-r from-[#880e4f] to-[#be185d] text-white shadow-xs font-black'
+                    : 'bg-rose-50/60 text-slate-700 hover:bg-rose-100/60 hover:text-[#9f0e4e]'
                 }`}
               >
                 <Layers className="w-3.5 h-3.5" />
@@ -241,8 +241,8 @@ export const QuickOrderView: React.FC<QuickOrderViewProps> = ({
                 onClick={() => handleSelectFamily('Accessoire')}
                 className={`px-3 py-1.5 text-xs font-bold rounded-xl flex items-center gap-1 transition cursor-pointer whitespace-nowrap ${
                   activeFamily === 'Accessoire' && !favoritesOnly && !topSellersOnly
-                    ? 'bg-teal-600 text-white shadow-xs font-bold'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-gradient-to-r from-[#70083b] to-[#9f0e4e] text-white shadow-xs font-black'
+                    : 'bg-rose-50/60 text-slate-700 hover:bg-rose-100/60 hover:text-[#9f0e4e]'
                 }`}
               >
                 <Wrench className="w-3.5 h-3.5" />

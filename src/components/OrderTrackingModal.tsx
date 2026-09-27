@@ -222,18 +222,18 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-slate-900 border border-rose-500/30 rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col text-white my-auto max-h-[92vh]">
+      <div className="bg-slate-900 border border-[#c2185b]/40 rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col text-white my-auto max-h-[92vh]">
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/70">
+        <div className="p-4 sm:p-5 border-b border-[#500428] flex items-center justify-between bg-gradient-to-r from-[#500428] via-[#70083b] to-[#9f0e4e] shadow-xs">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-600 to-fuchsia-700 flex items-center justify-center text-white shadow-md">
-              <Truck className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-white/20 border border-white/25 flex items-center justify-center text-white shadow-md">
+              <Truck className="w-5 h-5 text-rose-100" />
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
                 {t.trackModalTitle}
               </h3>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-rose-200">
                 {currentCustomer
                   ? 'Vos précommandes personnelles et statut de préparation'
                   : t.trackModalSubtitle}
@@ -244,7 +244,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-rose-200 hover:text-white flex items-center justify-center transition cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -252,7 +252,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
 
         {/* Authenticated Customer Context Banner */}
         {currentCustomer ? (
-          <div className="px-4 py-2.5 bg-rose-950/30 border-b border-rose-500/20 flex items-center justify-between gap-2 flex-wrap">
+          <div className="px-4 py-2.5 bg-[#70083b]/25 border-b border-[#c2185b]/30 flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-2 text-xs">
               <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <span className="text-slate-300">
@@ -260,7 +260,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                 {currentCustomer.companyName ? ` (${currentCustomer.companyName})` : ''}
               </span>
             </div>
-            <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[11px] font-bold border border-rose-500/30">
+            <span className="px-2 py-0.5 rounded-full bg-[#9f0e4e]/30 text-rose-200 text-[11px] font-bold border border-[#c2185b]/40">
               {customerOrders.length} commande(s) enregistrée(s)
             </span>
           </div>
@@ -286,7 +286,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                   ? 'Rechercher parmi vos commandes (référence, extrait, date)...'
                   : 'Saisissez votre réf: PRE-2026-... ou votre téléphone'
               }
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-8 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-hidden focus:border-rose-500 transition font-mono"
+              className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-8 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-hidden focus:border-[#c2185b] focus:ring-1 focus:ring-[#9f0e4e] transition font-mono"
             />
             {searchInput && (
               <button
@@ -338,7 +338,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                           onClick={() => setSelectedOrder(ord)}
                           className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold shrink-0 transition cursor-pointer border ${
                             isSelected
-                              ? 'bg-rose-600 text-white border-rose-500 shadow-sm'
+                              ? 'bg-gradient-to-r from-[#9f0e4e] to-[#c2185b] text-white border-rose-400/50 shadow-sm'
                               : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-750'
                           }`}
                         >
@@ -397,7 +397,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                               className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-bold transition mb-1 ${
                                 isDone
                                   ? isCurrent
-                                    ? 'bg-rose-600 text-white ring-4 ring-rose-600/30'
+                                    ? 'bg-gradient-to-r from-[#9f0e4e] to-[#c2185b] text-white ring-4 ring-[#c2185b]/40 shadow-sm'
                                     : 'bg-emerald-600 text-white'
                                   : 'bg-slate-800 text-slate-500 border border-slate-700'
                               }`}
@@ -447,7 +447,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
 
                     <div className="space-y-1 sm:text-right">
                       <div className="text-slate-400">Total Précommandé :</div>
-                      <div className="text-base font-extrabold text-rose-400 font-mono">
+                      <div className="text-base font-extrabold text-[#f472b6] font-mono">
                         {formatDZD(activeOrderToDisplay.totalDA)}
                       </div>
                     </div>
@@ -483,7 +483,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                     <button
                       type="button"
                       onClick={() => downloadOrderPDF(activeOrderToDisplay, storeSettings)}
-                      className="w-full sm:flex-1 py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition shadow-md cursor-pointer"
+                      className="w-full sm:flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#70083b] via-[#9f0e4e] to-[#c2185b] hover:opacity-95 text-white font-black text-xs flex items-center justify-center gap-2 transition shadow-md cursor-pointer"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>{t.downloadPdfBtn}</span>

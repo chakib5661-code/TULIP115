@@ -51,7 +51,7 @@ import { PwaInstallModal } from './components/PwaInstallModal';
 import { PwaInstallAdviceBanner } from './components/PwaInstallAdviceBanner';
 import { AppLanguage } from './translations';
 import { downloadOrderPDF, formatDZD } from './utils/pdfGenerator';
-import { trackCustomEvent } from './utils/analytics';
+import { trackCustomEvent, applyServerAnalyticsConfig } from './utils/analytics';
 import { isProductTopSeller } from './utils/productUtils';
 import { detectUserDevice, DeviceInfo } from './utils/deviceDetector';
 import {
@@ -889,6 +889,10 @@ export default function App() {
       try {
         const data = await fetchSyncData();
         if (!isMounted || !data) return;
+
+        if (data.analyticsConfig) {
+          applyServerAnalyticsConfig(data.analyticsConfig);
+        }
 
         // Skip state updates entirely if database has not changed on server
         if (data.lastUpdated && data.lastUpdated === lastSyncedServerTimeRef.current) {
@@ -2007,14 +2011,14 @@ export default function App() {
       ) : (
         <>
           {/* Hero / Information Showcase Banner */}
-          <section className="bg-slate-900 text-white border-b border-slate-800 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+          <section className="bg-gradient-to-br from-[#3b021d] via-[#4d0427] to-[#1f0210] text-white border-b border-[#70083b]/60 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#ec4899_1.2px,transparent_1.2px)] [background-size:16px_16px] pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-4 py-3.5 sm:py-6 lg:py-8 relative z-10">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 lg:gap-6">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[11px] sm:text-xs font-bold mb-1.5 sm:mb-2">
-                <ShieldCheck className="w-3.5 h-3.5" />
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#be185d]/20 text-rose-200 border border-[#f472b6]/30 text-[11px] sm:text-xs font-bold mb-1.5 sm:mb-2">
+                <ShieldCheck className="w-3.5 h-3.5 text-rose-300" />
                 <span>Vente en Gros & Demi-Gros aux Parfumeurs & Artisans en Algérie</span>
               </div>
 
@@ -2022,7 +2026,7 @@ export default function App() {
                 Matières Premières de Parfumerie : Extraits & Flacons
               </h2>
 
-              <p className="text-xs sm:text-sm text-slate-300 mt-1 sm:mt-2 leading-relaxed max-w-xl">
+              <p className="text-xs sm:text-sm text-rose-100/90 mt-1 sm:mt-2 leading-relaxed max-w-xl">
                 <span className="block sm:hidden">
                   Disponibilités réelles synchronisées avec le stock. Réservation en ligne avec Bon de Précommande PDF.
                 </span>
@@ -2037,18 +2041,18 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setSelectedFamily('Extrait')}
-                  className="hidden sm:inline-flex px-3.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-semibold items-center gap-1.5 transition cursor-pointer"
+                  className="hidden sm:inline-flex px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-[#9f0e4e] to-[#c2185b] hover:opacity-95 text-white border border-rose-300/40 font-semibold items-center gap-1.5 transition cursor-pointer shadow-sm"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <Sparkles className="w-3.5 h-3.5 text-rose-200" />
                   Famille Extraits ({familyCounts.Extrait} refs)
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedFamily('Flacon')}
-                  className="hidden sm:inline-flex px-3.5 py-1.5 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/40 font-semibold items-center gap-1.5 transition cursor-pointer"
+                  className="hidden sm:inline-flex px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-rose-100 border border-white/20 font-semibold items-center gap-1.5 transition cursor-pointer"
                 >
-                  <Layers className="w-3.5 h-3.5 text-indigo-400" />
+                  <Layers className="w-3.5 h-3.5 text-rose-300" />
                   Famille Flacons ({familyCounts.Flacon} refs)
                 </button>
 
@@ -2056,23 +2060,23 @@ export default function App() {
                   type="button"
                   id="hero-shortcut-accessories"
                   onClick={() => setSelectedFamily('Accessoire')}
-                  className="hidden sm:inline-flex px-3.5 py-1.5 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 font-semibold items-center gap-1.5 transition cursor-pointer"
+                  className="hidden sm:inline-flex px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-rose-100 border border-white/20 font-semibold items-center gap-1.5 transition cursor-pointer"
                 >
-                  <Wrench className="w-3.5 h-3.5 text-teal-400" />
+                  <Wrench className="w-3.5 h-3.5 text-rose-300" />
                   Famille Accessoires ({familyCounts.Accessoire} refs)
                 </button>
 
                 <button
                   type="button"
                   onClick={() => handleSelectInterface('quick')}
-                  className="hidden sm:inline-flex px-3.5 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-semibold items-center gap-1.5 transition cursor-pointer"
+                  className="hidden sm:inline-flex px-3.5 py-1.5 rounded-lg bg-rose-950/60 hover:bg-rose-900/70 text-rose-200 border border-rose-500/40 font-semibold items-center gap-1.5 transition cursor-pointer"
                 >
-                  <LayoutGrid className="w-3.5 h-3.5 text-emerald-400" />
+                  <LayoutGrid className="w-3.5 h-3.5 text-rose-400" />
                   {currentLang === 'ar' ? 'الطلب السريع (جدول)' : 'Basculer en Commande Rapide'}
                 </button>
 
-                <div className="flex items-center gap-1.5 text-slate-400 text-[11px] sm:text-xs">
-                  <Truck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <div className="flex items-center gap-1.5 text-rose-200/80 text-[11px] sm:text-xs">
+                  <Truck className="w-3.5 h-3.5 text-rose-400 shrink-0" />
                   <span>Livraison 58 Wilayas (Yalidine / Domicile / Magasin)</span>
                 </div>
               </div>
@@ -2080,7 +2084,7 @@ export default function App() {
 
             {/* Right Side Showcase: Stock & Pre-Order Guarantee (Hidden on mobile for smaller footprint and less detail) */}
             {isAdminMode ? (
-              <div className="hidden sm:block bg-slate-800/90 border border-emerald-500/50 rounded-2xl p-4 sm:p-5 max-w-sm w-full shadow-lg">
+              <div className="hidden sm:block bg-[#240313]/85 backdrop-blur-md border border-emerald-500/50 rounded-2xl p-4 sm:p-5 max-w-sm w-full shadow-lg">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                     <FileSpreadsheet className="w-4 h-4" />
@@ -2091,7 +2095,7 @@ export default function App() {
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-300 leading-relaxed mb-3">
+                <p className="text-xs text-rose-100/90 leading-relaxed mb-3">
                   Votre logiciel de caisse n'a pas d'API ? Exportez simplement votre fichier Excel pour mettre à jour les stocks du site en 1 clic.
                 </p>
 
@@ -2105,23 +2109,23 @@ export default function App() {
                 </button>
               </div>
             ) : (
-              <div className="hidden sm:block bg-slate-800/90 border border-amber-500/30 rounded-2xl p-4 sm:p-5 max-w-sm w-full shadow-xl">
+              <div className="hidden sm:block bg-[#240313]/85 backdrop-blur-md border border-[#c2185b]/40 rounded-2xl p-4 sm:p-5 max-w-sm w-full shadow-2xl">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <PackageCheck className="w-4 h-4" />
+                  <span className="text-xs font-bold text-rose-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <PackageCheck className="w-4 h-4 text-rose-400" />
                     Réservation Express 48H
                   </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold">
+                  <span className="text-[10px] px-2 py-0.5 rounded bg-[#70083b]/80 text-rose-100 border border-[#c2185b]/60 font-semibold">
                     Stock Réel
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-300 leading-relaxed mb-3">
+                <p className="text-xs text-rose-100/90 leading-relaxed mb-3">
                   Sélectionnez vos extraits et flacons, téléchargez votre <strong>Bon de Précommande officiel en PDF</strong> et transmettez-le directement pour expédition rapide.
                 </p>
 
-                <div className="flex items-center gap-2 pt-1 border-t border-slate-700/60 text-xs text-slate-300">
-                  <Phone className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <div className="flex items-center gap-2 pt-1 border-t border-[#70083b]/60 text-xs text-rose-200">
+                  <Phone className="w-3.5 h-3.5 text-rose-400 shrink-0" />
                   <span>Contact Telegram & Vente : <strong className="text-white">+213 799 93 83 99</strong></span>
                 </div>
               </div>
@@ -2218,27 +2222,27 @@ export default function App() {
       )}
 
       {/* Footer */}
-      <footer className="bg-slate-900 border-t border-slate-800 text-slate-400 text-xs mt-12">
+      <footer className="bg-gradient-to-b from-[#2a0416] via-[#1c020f] to-[#12010a] border-t border-[#70083b]/60 text-rose-200/70 text-xs mt-12">
         <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Col 1 */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-white font-bold text-base">
-              <div className="w-7 h-7 rounded bg-amber-500 flex items-center justify-center text-slate-950 font-extrabold text-xs">
+            <div className="flex items-center gap-2.5 text-white font-bold text-base">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#9f0e4e] via-[#c2185b] to-[#e91e63] flex items-center justify-center text-white font-black text-xs shadow-md border border-rose-300/30">
                 TF
               </div>
-              {storeSettings.storeName}
+              <span className="tracking-tight text-white font-extrabold">{storeSettings.storeName}</span>
             </div>
-            <p className="text-slate-400 text-xs leading-relaxed">
+            <p className="text-rose-100/80 text-xs leading-relaxed">
               Fournisseur et grossiste de matières premières pour la parfumerie, la cosmétique et les emballages en Algérie.
             </p>
-            <div className="text-[11px] text-amber-400 font-medium">
+            <div className="text-[11px] text-rose-300 font-medium">
               Extraits purs de Grasse • Flaconnerie luxe • Livraison 58 Wilayas
             </div>
           </div>
 
           {/* Col 2 */}
           <div className="space-y-2">
-            <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
+            <h4 className="text-xs font-bold text-rose-100 uppercase tracking-wider">
               Familles de Produits
             </h4>
             <ul className="space-y-1.5">
@@ -2249,7 +2253,7 @@ export default function App() {
                     setSelectedFamily('Extrait');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="hover:text-amber-400 transition"
+                  className="hover:text-rose-300 transition cursor-pointer"
                 >
                   Extraits & Concentrés de parfum
                 </button>
@@ -2261,7 +2265,7 @@ export default function App() {
                     setSelectedFamily('Flacon');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="hover:text-amber-400 transition"
+                  className="hover:text-rose-300 transition cursor-pointer"
                 >
                   Flacons vaporisateurs & Roll-on
                 </button>
@@ -2273,7 +2277,7 @@ export default function App() {
                     setSelectedFamily('all');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="hover:text-amber-400 transition"
+                  className="hover:text-rose-300 transition cursor-pointer"
                 >
                   Catalogue complet matières premières
                 </button>
@@ -2283,33 +2287,33 @@ export default function App() {
 
           {/* Col 3 */}
           <div className="space-y-2">
-            <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
+            <h4 className="text-xs font-bold text-rose-100 uppercase tracking-wider">
               Coordonnées en Algérie
             </h4>
-            <p className="flex items-start gap-1.5 text-slate-300">
-              <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <p className="flex items-start gap-1.5 text-rose-100/90">
+              <MapPin className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
               <span>{storeSettings.address}, {storeSettings.wilaya}</span>
             </p>
-            <p className="flex items-center gap-1.5 text-slate-300">
-              <Phone className="w-4 h-4 text-amber-400 shrink-0" />
+            <p className="flex items-center gap-1.5 text-rose-100/90">
+              <Phone className="w-4 h-4 text-rose-400 shrink-0" />
               <span>{storeSettings.phone}</span>
             </p>
-            <p className="flex items-center gap-1.5 text-slate-300">
-              <Clock className="w-4 h-4 text-amber-400 shrink-0" />
+            <p className="flex items-center gap-1.5 text-rose-100/90">
+              <Clock className="w-4 h-4 text-rose-400 shrink-0" />
               <span>Samedi au Jeudi : 08h30 - 17h00</span>
             </p>
           </div>
 
           {/* Col 4: Merchant Tools (Hidden unless in Admin Mode) */}
           <div className="space-y-2">
-            <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center justify-between">
+            <h4 className="text-xs font-bold text-rose-100 uppercase tracking-wider flex items-center justify-between">
               <span>Espace Gestionnaire</span>
               {isAdminMode ? (
                 <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-mono">
                   <Unlock className="w-3 h-3" /> Actif
                 </span>
               ) : (
-                <span className="text-[10px] text-slate-500 flex items-center gap-1">
+                <span className="text-[10px] text-rose-300/60 flex items-center gap-1">
                   <Lock className="w-3 h-3" /> Verrouillé
                 </span>
               )}
@@ -2320,7 +2324,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setIsExcelSyncOpen(true)}
-                  className="w-full text-left py-1.5 px-2.5 rounded bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs flex items-center justify-between border border-slate-700"
+                  className="w-full text-left py-1.5 px-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-750 text-slate-200 text-xs flex items-center justify-between border border-slate-700"
                 >
                   <span className="flex items-center gap-1.5">
                     <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
@@ -2332,10 +2336,10 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setIsAdminOrdersOpen(true)}
-                  className="w-full text-left py-1.5 px-2.5 rounded bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs flex items-center justify-between border border-slate-700"
+                  className="w-full text-left py-1.5 px-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-750 text-slate-200 text-xs flex items-center justify-between border border-slate-700"
                 >
                   <span className="flex items-center gap-1.5">
-                    <PackageCheck className="w-3.5 h-3.5 text-amber-400" />
+                    <PackageCheck className="w-3.5 h-3.5 text-rose-400" />
                     Précommandes reçues ({orders.length})
                   </span>
                   <ArrowUpRight className="w-3 h-3 text-slate-500" />
@@ -2347,19 +2351,19 @@ export default function App() {
                     setCurrentView('admin');
                     window.location.hash = 'admin';
                   }}
-                  className="w-full text-left py-1.5 px-2.5 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs flex items-center justify-between border border-amber-500/40 font-bold transition"
+                  className="w-full text-left py-1.5 px-2.5 rounded-xl bg-[#9f0e4e]/20 hover:bg-[#9f0e4e]/30 text-rose-200 text-xs flex items-center justify-between border border-[#c2185b]/40 font-bold transition"
                 >
                   <span className="flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-rose-300" />
                     Ouvrir la Page Administration
                   </span>
-                  <ArrowUpRight className="w-3 h-3 text-amber-400" />
+                  <ArrowUpRight className="w-3 h-3 text-rose-300" />
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setIsAdminMode(false)}
-                  className="w-full text-left py-1.5 px-2.5 rounded bg-slate-850 hover:bg-slate-800 text-slate-400 hover:text-white text-xs flex items-center justify-between border border-slate-800 transition"
+                  className="w-full text-left py-1.5 px-2.5 rounded-xl bg-slate-850 hover:bg-slate-800 text-slate-400 hover:text-white text-xs flex items-center justify-between border border-slate-800 transition"
                 >
                   <span>Masquer les outils d'administration</span>
                   <Lock className="w-3 h-3" />
@@ -2367,7 +2371,7 @@ export default function App() {
               </div>
             ) : (
               <div className="space-y-2 pt-1">
-                <p className="text-slate-500 text-xs leading-relaxed">
+                <p className="text-rose-200/70 text-xs leading-relaxed">
                   Fournisseur professionnel de matières premières de parfumerie et flaconnage en Algérie.
                 </p>
                 <div className="flex flex-wrap items-center gap-2 pt-1">
@@ -2375,7 +2379,7 @@ export default function App() {
                     type="button"
                     id="btn-customer-order-tracking-footer"
                     onClick={() => setIsOrderTrackingOpen(true)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 text-xs font-semibold transition cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#9f0e4e]/30 to-[#c2185b]/30 hover:opacity-95 text-rose-200 border border-[#c2185b]/50 text-xs font-semibold transition cursor-pointer shadow-xs"
                   >
                     <Truck className="w-3.5 h-3.5 text-rose-400" />
                     <span>Suivre mes Précommandes</span>
@@ -2383,28 +2387,28 @@ export default function App() {
                 </div>
 
                 {/* Footer Language Selection */}
-                <div className="pt-2 border-t border-slate-800 flex items-center gap-2">
-                  <Globe className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="text-[11px] text-slate-400">Langue / اللغة :</span>
-                  <div className="inline-flex rounded-lg bg-slate-800 p-0.5 border border-slate-700 text-xs">
+                <div className="pt-2 border-t border-[#70083b]/40 flex items-center gap-2">
+                  <Globe className="w-3.5 h-3.5 text-rose-400" />
+                  <span className="text-[11px] text-rose-200/80">Langue / اللغة :</span>
+                  <div className="inline-flex rounded-lg bg-black/40 p-0.5 border border-[#70083b]/50 text-xs">
                     <button
                       type="button"
                       onClick={() => handleConfirmLanguageSelection('fr')}
-                      className={`px-2 py-0.5 rounded text-[11px] font-bold transition cursor-pointer ${currentLang === 'fr' ? 'bg-amber-500 text-slate-950 font-black' : 'text-slate-300 hover:text-white'}`}
+                      className={`px-2 py-0.5 rounded text-[11px] font-bold transition cursor-pointer ${currentLang === 'fr' ? 'bg-gradient-to-r from-[#9f0e4e] to-[#c2185b] text-white font-black' : 'text-rose-200 hover:text-white'}`}
                     >
                       FR
                     </button>
                     <button
                       type="button"
                       onClick={() => handleConfirmLanguageSelection('ar')}
-                      className={`px-2 py-0.5 rounded text-[11px] font-bold transition cursor-pointer ${currentLang === 'ar' ? 'bg-amber-500 text-slate-950 font-black' : 'text-slate-300 hover:text-white'}`}
+                      className={`px-2 py-0.5 rounded text-[11px] font-bold transition cursor-pointer ${currentLang === 'ar' ? 'bg-gradient-to-r from-[#9f0e4e] to-[#c2185b] text-white font-black' : 'text-rose-200 hover:text-white'}`}
                     >
                       العربية
                     </button>
                     <button
                       type="button"
                       onClick={() => handleConfirmLanguageSelection('en')}
-                      className={`px-2 py-0.5 rounded text-[11px] font-bold transition cursor-pointer ${currentLang === 'en' ? 'bg-amber-500 text-slate-950 font-black' : 'text-slate-300 hover:text-white'}`}
+                      className={`px-2 py-0.5 rounded text-[11px] font-bold transition cursor-pointer ${currentLang === 'en' ? 'bg-gradient-to-r from-[#9f0e4e] to-[#c2185b] text-white font-black' : 'text-rose-200 hover:text-white'}`}
                     >
                       EN
                     </button>
@@ -2412,7 +2416,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setIsLanguageModalOpen(true)}
-                    className="text-[11px] text-amber-400 hover:underline cursor-pointer ml-1"
+                    className="text-[11px] text-rose-300 hover:underline cursor-pointer ml-1"
                   >
                     {currentLang === 'ar' ? 'تغيير...' : 'Changer...'}
                   </button>
@@ -2422,7 +2426,7 @@ export default function App() {
           </div>
         </div>
 
-        <div className="border-t border-slate-800 max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-500">
+        <div className="border-t border-[#70083b]/40 max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-rose-300/60">
           <div>
             © {new Date().getFullYear()} {storeSettings.storeName}. Tous droits réservés. Devises en Dinars Algériens (DA).
           </div>

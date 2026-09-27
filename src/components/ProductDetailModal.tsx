@@ -365,7 +365,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         <span className="text-xl sm:text-2xl font-black text-slate-950">
                           {formatDZD(product.priceDA)}
                         </span>
-                        {isExtrait && <span className="text-xs font-bold text-amber-700">/ 1g</span>}
+                        {isExtrait && <span className="text-xs font-bold text-[#880e4f]">/ 1g</span>}
                       </div>
                     )}
                   </div>
@@ -400,8 +400,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         }}
                         className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer shrink-0 ${
                           selectedQty === presetG
-                            ? 'bg-amber-500 text-slate-950 border-amber-600 shadow-xs'
-                            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                            ? 'bg-[#9f0e4e] text-white border-[#70083b] shadow-xs'
+                            : 'bg-rose-50/60 text-slate-700 border-rose-200/80 hover:bg-rose-100/60'
                         }`}
                         id={`modal-preset-${presetG}g`}
                       >
@@ -427,12 +427,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               ) : (
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <div className="flex items-center border border-slate-300 rounded-xl bg-white p-1 shrink-0 shadow-xs">
+                    <div className="flex items-center border border-rose-200/90 rounded-xl bg-rose-50/40 p-1 shrink-0 shadow-inner">
                       <button
                         type="button"
                         onClick={decrement}
                         disabled={selectedQty <= 1}
-                        className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-lg disabled:opacity-40 cursor-pointer min-w-[32px] min-h-[32px] flex items-center justify-center"
+                        className="p-1.5 text-slate-600 hover:bg-rose-100/70 rounded-lg disabled:opacity-40 cursor-pointer min-w-[32px] min-h-[32px] flex items-center justify-center"
                         aria-label="Diminuer la quantité"
                         id="modal-qty-decrement"
                       >
@@ -450,14 +450,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                           className="w-12 sm:w-14 text-center text-xs font-bold text-slate-900 bg-transparent focus:outline-hidden"
                           id="modal-qty-input"
                         />
-                        <span className="text-[11px] text-slate-500 font-bold">{isExtrait ? 'g' : 'u'}</span>
+                        <span className="text-[11px] text-[#880e4f] font-bold">{isExtrait ? 'g' : 'u'}</span>
                       </div>
 
                       <button
                         type="button"
                         onClick={increment}
                         disabled={selectedQty >= availableStock}
-                        className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-lg disabled:opacity-40 cursor-pointer min-w-[32px] min-h-[32px] flex items-center justify-center"
+                        className="p-1.5 text-slate-600 hover:bg-rose-100/70 rounded-lg disabled:opacity-40 cursor-pointer min-w-[32px] min-h-[32px] flex items-center justify-center"
                         aria-label="Augmenter la quantité"
                         id="modal-qty-increment"
                       >
@@ -471,7 +471,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       className={`flex-1 py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 sm:gap-2 transition shadow-md cursor-pointer ${
                         cartQuantity > 0
                           ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                          : 'bg-amber-500 hover:bg-amber-400 text-slate-950'
+                          : 'bg-gradient-to-r from-[#70083b] via-[#9f0e4e] to-[#c2185b] hover:opacity-95 text-white'
                       }`}
                       id="modal-add-to-cart-btn"
                     >

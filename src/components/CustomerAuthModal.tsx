@@ -346,13 +346,13 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
       dir={isRtl ? 'rtl' : 'ltr'}
     >
       <div className="bg-white border border-slate-200 text-slate-900 rounded-2xl sm:rounded-3xl shadow-2xl max-w-xl w-full overflow-hidden flex flex-col relative max-h-[94vh] animate-in fade-in zoom-in duration-150">
-        {/* Top Gold & Amber Accent Bar */}
-        <div className="h-1.5 w-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 shrink-0" />
+        {/* Top Tulip Royal Accent Bar */}
+        <div className="h-1.5 w-full bg-gradient-to-r from-[#70083b] via-[#9f0e4e] to-[#c2185b] shrink-0" />
 
         {/* Modal Top Header */}
-        <div className="p-4 sm:p-6 pb-2.5 flex items-start justify-between bg-white border-b border-slate-100 shrink-0">
+        <div className="p-4 sm:p-6 pb-2.5 flex items-start justify-between bg-white border-b border-rose-100 shrink-0">
           <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center border border-amber-200 shadow-xs shrink-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-rose-50 text-[#9f0e4e] flex items-center justify-center border border-rose-200/90 shadow-xs shrink-0">
               <Lock className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
@@ -360,7 +360,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                 <h3 className="text-base sm:text-xl font-black text-slate-900 tracking-tight">
                   {t.authModalTitle}
                 </h3>
-                <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[10px] sm:text-[11px] font-bold">
+                <span className="px-2 py-0.5 rounded-full bg-rose-100 text-[#70083b] border border-rose-300 text-[10px] sm:text-[11px] font-bold">
                   B2B • Serveur En Ligne
                 </span>
               </div>
@@ -383,8 +383,8 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
         </div>
 
         {/* Tab Switcher */}
-        <div className="px-4 sm:px-6 pt-3 pb-2 bg-slate-50/70 border-b border-slate-100 shrink-0">
-          <div className="grid grid-cols-2 p-1 bg-slate-200/70 rounded-xl text-xs font-bold">
+        <div className="px-4 sm:px-6 pt-3 pb-2 bg-rose-50/50 border-b border-rose-100 shrink-0">
+          <div className="grid grid-cols-2 p-1 bg-rose-100/70 rounded-xl text-xs font-bold">
             <button
               type="button"
               onClick={() => {
@@ -393,11 +393,11 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
               }}
               className={`py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer ${
                 tab === 'login'
-                  ? 'bg-white text-slate-900 shadow-xs font-black'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-[#9f0e4e] shadow-xs font-black'
+                  : 'text-slate-600 hover:text-[#70083b]'
               }`}
             >
-              <UserCheck className="w-4 h-4 text-amber-600" />
+              <UserCheck className="w-4 h-4 text-[#9f0e4e]" />
               <span>{t.authLoginTab}</span>
             </button>
             <button
@@ -408,11 +408,11 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
               }}
               className={`py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer ${
                 tab === 'register'
-                  ? 'bg-white text-slate-900 shadow-xs font-black'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-[#9f0e4e] shadow-xs font-black'
+                  : 'text-slate-600 hover:text-[#70083b]'
               }`}
             >
-              <Building2 className="w-4 h-4 text-amber-600" />
+              <Building2 className="w-4 h-4 text-[#9f0e4e]" />
               <span>{t.authRegisterTab}</span>
             </button>
           </div>
@@ -422,9 +422,9 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
         <div className="p-5 sm:p-6 max-h-[78vh] overflow-y-auto">
           {tab === 'login' ? (
             <div className="space-y-4">
-              <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
-                <Info className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-                <p className="text-xs text-amber-950 leading-relaxed font-medium">
+              <div className="bg-rose-50/80 border border-rose-200/90 rounded-2xl p-4 flex items-start gap-3">
+                <Info className="w-5 h-5 text-[#9f0e4e] shrink-0 mt-0.5" />
+                <p className="text-xs text-[#70083b] leading-relaxed font-medium">
                   {t.authNoticeText}
                 </p>
               </div>
@@ -451,7 +451,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                       value={usernameInput}
                       onChange={(e) => setUsernameInput(e.target.value)}
                       placeholder={lang === 'ar' ? 'مثال: 0555123456 أو اسم المستخدم' : 'Ex: 0555 12 34 56 ou votre identifiant'}
-                      className={`w-full ${isRtl ? 'pr-10 pl-3.5' : 'pl-10 pr-3.5'} py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition`}
+                      className={`w-full ${isRtl ? 'pr-10 pl-3.5' : 'pl-10 pr-3.5'} py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-rose-500/20 focus:border-[#9f0e4e] transition`}
                       required
                     />
                   </div>
@@ -474,7 +474,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                       value={passwordInput}
                       onChange={(e) => setPasswordInput(e.target.value)}
                       placeholder={t.authPasswordPlaceholder}
-                      className={`w-full ${isRtl ? 'pr-10 pl-3.5' : 'pl-10 pr-3.5'} py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition`}
+                      className={`w-full ${isRtl ? 'pr-10 pl-3.5' : 'pl-10 pr-3.5'} py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-rose-500/20 focus:border-[#9f0e4e] transition`}
                       required
                     />
                   </div>
@@ -484,7 +484,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                   id="btn-login-submit"
                   type="submit"
                   disabled={isLoggingIn}
-                  className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg cursor-pointer transition active:scale-[0.99] disabled:opacity-50"
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#70083b] via-[#9f0e4e] to-[#c2185b] hover:opacity-95 text-white font-black text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg cursor-pointer transition active:scale-[0.99] disabled:opacity-50"
                 >
                   {isLoggingIn ? (
                     <>
@@ -510,7 +510,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                     setTab('register');
                     setRegisterError(null);
                   }}
-                  className="text-amber-700 hover:text-amber-800 text-xs font-bold inline-flex items-center gap-1.5 transition cursor-pointer hover:underline"
+                  className="text-[#9f0e4e] hover:text-[#70083b] text-xs font-bold inline-flex items-center gap-1.5 transition cursor-pointer hover:underline"
                 >
                   <span>{lang === 'ar' ? 'طلب فتح حساب واستلام اسم المستخدم وكلمة المرور' : "Demander l'ouverture d'un compte & recevoir mes identifiants"}</span>
                   <ArrowRight className={`w-3.5 h-3.5 ${isRtl ? 'rotate-180' : ''}`} />
@@ -520,13 +520,13 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
           ) : registerSuccess && submittedApp ? (
             /* Registration Success: Credentials assigned by Tulip Administration */
             <div className="p-5 sm:p-6 text-center space-y-4 animate-in fade-in zoom-in duration-200">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center mx-auto border-2 border-amber-300 shadow-md">
-                <ShieldCheck className="w-7 h-7 sm:w-8 sm:h-8 text-amber-700" />
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-rose-100 text-[#70083b] flex items-center justify-center mx-auto border-2 border-rose-300 shadow-md">
+                <ShieldCheck className="w-7 h-7 sm:w-8 sm:h-8 text-[#9f0e4e]" />
               </div>
 
               <div>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-900 text-xs font-black uppercase tracking-wider mb-2">
-                  <Clock className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 border border-rose-300 text-[#70083b] text-xs font-black uppercase tracking-wider mb-2">
+                  <Clock className="w-3.5 h-3.5 text-[#9f0e4e] animate-pulse" />
                   {lang === 'ar' ? 'طلب مسجل • قيد المراجعة' : "Demande enregistrée • En cours de validation"}
                 </span>
                 <h4 className="text-lg sm:text-xl font-black text-slate-900">
@@ -551,7 +551,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                 </div>
                 <div className="flex items-center justify-between pb-2 border-b border-slate-200">
                   <span className="text-slate-500 font-medium">{lang === 'ar' ? 'الهاتف لاستلام الحساب :' : 'Téléphone (WhatsApp / SMS) :'}</span>
-                  <span className="font-bold text-amber-850 font-mono">{submittedApp.phone}</span>
+                  <span className="font-bold text-[#880e4f] font-mono">{submittedApp.phone}</span>
                 </div>
                 <div className="flex items-center justify-between pb-2 border-b border-slate-200">
                   <span className="text-slate-500 font-medium">{lang === 'ar' ? 'الولاية :' : 'Wilaya :'}</span>
@@ -559,8 +559,8 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                 </div>
                 <div className="flex items-center justify-between pt-1">
                   <span className="text-slate-500 font-medium">{lang === 'ar' ? 'الحالة :' : 'Statut :'}</span>
-                  <span className="font-bold text-amber-800 bg-amber-100/90 px-2.5 py-0.5 rounded-md text-[11px] flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-amber-600" />
+                  <span className="font-bold text-[#70083b] bg-rose-100/90 px-2.5 py-0.5 rounded-md text-[11px] flex items-center gap-1 border border-rose-200">
+                    <Clock className="w-3 h-3 text-[#9f0e4e]" />
                     {lang === 'ar' ? 'في انتظار تزويدكم ببيانات الدخول' : "Attribution des identifiants en cours"}
                   </span>
                 </div>
@@ -591,7 +591,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                     setUsernameInput(submittedApp.phone);
                     setRegisterSuccess(false);
                   }}
-                  className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
+                  className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#70083b] via-[#9f0e4e] to-[#c2185b] hover:opacity-95 text-white font-black text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
                 >
                   <KeyRound className="w-3.5 h-3.5" />
                   <span>{lang === 'ar' ? 'لدي حساب بالفعل -> الذهاب لتسجيل الدخول' : "J'ai reçu mes identifiants -> Me connecter"}</span>
@@ -609,15 +609,15 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
           ) : (
             /* Registration Form: Request Access (Credentials given by Tulip) */
             <div className="space-y-4">
-              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
-                <ShieldCheck className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-                <div className="text-xs text-amber-950 leading-relaxed space-y-1">
+              <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 flex items-start gap-3">
+                <ShieldCheck className="w-5 h-5 text-[#9f0e4e] shrink-0 mt-0.5" />
+                <div className="text-xs text-[#70083b] leading-relaxed space-y-1">
                   <p className="font-bold">
                     {lang === 'ar'
                       ? 'نظام الحسابات المهنية المعتمدة (B2B) :'
                       : 'Attribution de vos identifiants par Tulip Fragrance :'}
                   </p>
-                  <p className="font-normal text-amber-900">
+                  <p className="font-normal text-[#880e4f]">
                     {lang === 'ar'
                       ? 'للحفاظ على سرية وهوامش أرباح زبائننا وصناع العطور، لا تحتاج إلى إنشاء كلمة مرور. نحن من نقوم بتعيين اسم المستخدم وكلمة المرور الرسمية وتزويدكم بها عبر الهاتف أو واتساب بعد مراجعة بيانات نشاطكم.'
                       : "Afin de protéger la confidentialité des marges de nos artisans et revendeurs, vous n'avez pas de mot de passe à créer. Notre équipe commerciale vous attribuera personnellement votre Nom d'utilisateur et Mot de passe après vérification de votre activité."}
@@ -644,7 +644,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder={lang === 'ar' ? 'مثال: كريم عمراني' : 'Ex: Karim Amrani'}
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:border-amber-500 transition"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:border-[#9f0e4e] transition"
                       required
                     />
                   </div>
@@ -659,7 +659,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
                       placeholder={lang === 'ar' ? 'مثال: عطور البهجة' : 'Ex: Parfumerie El Bahia'}
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:border-amber-500 transition"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:border-[#9f0e4e] transition"
                       required
                     />
                   </div>
@@ -691,7 +691,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                       id="reg-wilaya"
                       value={wilayaCode}
                       onChange={(e) => setWilayaCode(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:bg-white focus:outline-hidden focus:border-amber-500 transition cursor-pointer"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:bg-white focus:outline-hidden focus:border-[#9f0e4e] transition cursor-pointer"
                       required
                     >
                       {ALGERIAN_WILAYAS.map((w) => (
@@ -727,7 +727,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                       value={commune}
                       onChange={(e) => setCommune(e.target.value)}
                       placeholder="Ex: Oran Centre, Kouba..."
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:border-amber-500 transition"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:border-[#9f0e4e] transition"
                     />
                   </div>
                 </div>
@@ -742,7 +742,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Ex: contact@parfumerie.dz"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:border-amber-500 transition"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:border-[#9f0e4e] transition"
                   />
                 </div>
 
@@ -760,7 +760,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                         ? 'ملاحظات إضافية، نوع النشاط، كميات الزيوت المستهدفة...'
                         : 'Notes additionnelles, volume prévisionnel, spécialité...'
                     }
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:border-amber-500 transition"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:border-[#9f0e4e] transition"
                   />
                 </div>
 
@@ -768,7 +768,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                   id="btn-register-submit"
                   type="submit"
                   disabled={isRegistering}
-                  className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg cursor-pointer transition disabled:opacity-50"
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#70083b] via-[#9f0e4e] to-[#c2185b] hover:opacity-95 text-white font-black text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg cursor-pointer transition disabled:opacity-50"
                 >
                   {isRegistering ? (
                     <>

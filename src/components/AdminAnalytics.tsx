@@ -29,6 +29,7 @@ import {
   getStoredSearchLogs,
   clearAnalyticsData,
   trackCustomEvent,
+  getEnvAnalyticsConfig,
 } from '../utils/analytics';
 import { formatDZD } from '../utils/pdfGenerator';
 
@@ -42,6 +43,8 @@ export const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ isAdmin }) => {
   const [searchLogs, setSearchLogs] = useState<SearchQueryLog[]>(getStoredSearchLogs);
   const [activeSubTab, setActiveSubTab] = useState<'ga4' | 'events' | 'heatmaps' | 'search'>('events');
   const [saveToast, setSaveToast] = useState<string | null>(null);
+
+  const envConfig = getEnvAnalyticsConfig();
 
   // Form states
   const [ga4IdInput, setGa4IdInput] = useState(settings.ga4MeasurementId || '');
@@ -486,6 +489,32 @@ export const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ isAdmin }) => {
             </div>
 
             <form onSubmit={handleSaveGA4} className="space-y-4 pt-1">
+              {envConfig.gaMeasurementId ? (
+                <div className="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-xl text-xs text-emerald-300 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>
+                      Variable d'environnement <strong>VITE_GA_MEASUREMENT_ID</strong> détectée :{' '}
+                      <code className="font-mono bg-emerald-900/60 px-1.5 py-0.5 rounded text-white font-bold">
+                        {envConfig.gaMeasurementId}
+                      </code>
+                    </span>
+                  </div>
+                  {ga4IdInput !== envConfig.gaMeasurementId && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setGa4IdInput(envConfig.gaMeasurementId);
+                        setGa4EnabledInput(true);
+                      }}
+                      className="text-[11px] font-bold text-amber-300 hover:text-white underline cursor-pointer"
+                    >
+                      Appliquer la valeur .env
+                    </button>
+                  )}
+                </div>
+              ) : null}
+
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1">
                   ID de mesure Google Analytics 4 (Measurement ID)
@@ -500,7 +529,7 @@ export const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ isAdmin }) => {
                   />
                 </div>
                 <p className="text-[11px] text-slate-400 mt-1">
-                  Trouvez cet ID dans votre console Google Analytics : <em>Administration &gt; Flux de données &gt; ID de mesure (ex: G-7ABC123XYZ)</em>.
+                  Format : <code className="text-amber-400 font-mono">G-XXXXXXXXXX</code> (Trouvez cet ID dans Google Analytics : <em>Administration &gt; Flux de données &gt; ID de mesure</em>). Vous pouvez également le spécifier comme variable d'environnement <code className="text-amber-300 font-mono">VITE_GA_MEASUREMENT_ID</code> (ou <code className="text-slate-300 font-mono">GA_MEASUREMENT_ID</code>) dans votre fichier <code className="text-slate-300 font-mono">.env</code>.
                 </p>
               </div>
 
@@ -597,6 +626,33 @@ export const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ isAdmin }) => {
               </div>
 
               <form onSubmit={handleSaveHeatmaps} className="space-y-4">
+                {envConfig.clarityProjectId ? (
+                  <div className="p-3 bg-rose-950/40 border border-rose-500/40 rounded-xl text-xs text-rose-300 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-rose-400 shrink-0" />
+                      <span>
+                        Variable d'environnement <strong>VITE_CLARITY_PROJECT_ID</strong> détectée :{' '}
+                        <code className="font-mono bg-rose-900/60 px-1.5 py-0.5 rounded text-white font-bold">
+                          {envConfig.clarityProjectId}
+                        </code>
+                      </span>
+                    </div>
+                    {heatmapIdInput !== envConfig.clarityProjectId && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setHeatmapProviderInput('clarity');
+                          setHeatmapIdInput(envConfig.clarityProjectId);
+                          setHeatmapEnabledInput(true);
+                        }}
+                        className="text-[11px] font-bold text-rose-300 hover:text-white underline cursor-pointer"
+                      >
+                        Appliquer la valeur .env
+                      </button>
+                    )}
+                  </div>
+                ) : null}
+
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                     Fournisseur d'outil d'enregistrement
@@ -648,7 +704,13 @@ export const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ isAdmin }) => {
                     className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white placeholder:text-slate-500 font-mono focus:outline-hidden focus:ring-2 focus:ring-rose-500"
                   />
                   <p className="text-[11px] text-slate-400 mt-1">
-                    Le script sera injecté pour capter les sessions d'utilisateurs sur mobile et desktop.
+                    {heatmapProviderInput === 'clarity' ? (
+                      <>
+                        Trouvez votre Project ID sur <a href="https://clarity.microsoft.com" target="_blank" rel="noopener noreferrer" className="text-rose-400 underline hover:text-rose-300">clarity.microsoft.com</a>. Vous pouvez également le spécifier comme variable d'environnement <code className="text-rose-300 font-mono">VITE_CLARITY_PROJECT_ID</code> (ou <code className="text-slate-300 font-mono">CLARITY_PROJECT_ID</code>) dans votre fichier <code className="text-slate-300 font-mono">.env</code>.
+                      </>
+                    ) : (
+                      'Le script sera injecté pour capter les sessions d\'utilisateurs sur mobile et desktop.'
+                    )}
                   </p>
                 </div>
 
