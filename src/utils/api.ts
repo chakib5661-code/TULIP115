@@ -588,7 +588,19 @@ export async function checkSupabaseStatus(): Promise<{
 }> {
   try {
     const res = await fetch('/api/supabase/status');
-    const data = await res.json();
+    const text = await res.text();
+    let data: any;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      // The serverless function might have thrown 500 or returned text
+      return {
+        success: false,
+        configured: false,
+        connected: false,
+        error: `Réponse serveur non-JSON (${res.status}): ${text.slice(0, 120)}`,
+      };
+    }
     return data;
   } catch (err: any) {
     return {
@@ -610,7 +622,16 @@ export async function syncDatabaseToSupabase(): Promise<{
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
     });
-    const data = await res.json();
+    const text = await res.text();
+    let data: any;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      return {
+        success: false,
+        error: `Erreur serveur Vercel (${res.status}): ${text.slice(0, 150)}`,
+      };
+    }
     return data;
   } catch (err: any) {
     return {

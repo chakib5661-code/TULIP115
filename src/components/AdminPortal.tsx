@@ -54,6 +54,11 @@ import { AdminAnalytics } from './AdminAnalytics';
 import { AdminTelegramModal } from './AdminTelegramModal';
 import { TulipLogo } from './TulipLogo';
 import { checkSupabaseStatus, syncDatabaseToSupabase } from '../utils/api';
+import {
+  getClientSupabaseCredentials,
+  directClientTestSupabase,
+  directClientSaveToSupabase,
+} from '../utils/supabaseClient';
 
 interface AdminPortalProps {
   products: Product[];
@@ -201,6 +206,33 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     setSupabaseStatus((prev) => ({ ...prev, loading: true }));
     try {
       const res = await checkSupabaseStatus();
+      if (res.connected) {
+        setSupabaseStatus({
+          loading: false,
+          configured: true,
+          connected: true,
+          url: res.url,
+          details: res.details,
+          error: undefined,
+        });
+        return;
+      }
+
+      // If serverless route had an issue, fallback to testing directly via client Supabase credentials
+      const clientCreds = getClientSupabaseCredentials();
+      if (clientCreds.url && clientCreds.key) {
+        const directRes = await directClientTestSupabase();
+        setSupabaseStatus({
+          loading: false,
+          configured: true,
+          connected: directRes.connected,
+          url: directRes.url || clientCreds.url,
+          details: directRes.connected ? 'Connecté directement à Supabase depuis le navigateur.' : undefined,
+          error: directRes.error || res.error,
+        });
+        return;
+      }
+
       setSupabaseStatus({
         loading: false,
         configured: Boolean(res.configured),
@@ -223,6 +255,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     setSupabaseSyncing(true);
     setSupabaseSyncMsg(null);
     try {
+      // 1. Try serverless backend route
       const res = await syncDatabaseToSupabase();
       if (res.success) {
         setSupabaseSyncMsg({
@@ -230,12 +263,37 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
           text: res.message || 'Toutes les données du catalogue et du site ont été synchronisées vers Supabase !',
         });
         refreshSupabaseStatus();
-      } else {
-        setSupabaseSyncMsg({
-          type: 'error',
-          text: res.error || 'Échec de la synchronisation vers Supabase.',
-        });
+        return;
       }
+
+      // 2. Direct browser fallback if Vercel serverless function timed out or threw error
+      const clientCreds = getClientSupabaseCredentials();
+      if (clientCreds.url && clientCreds.key) {
+        const fullSiteSnapshot = {
+          products,
+          orders,
+          customerUsers,
+          customerApplications,
+          storeSettings,
+          adBanners,
+          lastUpdated: new Date().toISOString(),
+        };
+
+        const directPush = await directClientSaveToSupabase(fullSiteSnapshot);
+        if (directPush.success) {
+          setSupabaseSyncMsg({
+            type: 'success',
+            text: directPush.message || 'Toutes les données ont été synchronisées avec succès directement vers Supabase !',
+          });
+          refreshSupabaseStatus();
+          return;
+        }
+      }
+
+      setSupabaseSyncMsg({
+        type: 'error',
+        text: res.error || 'Échec de la synchronisation vers Supabase. Vérifiez que VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY sont définis.',
+      });
     } catch (err: any) {
       setSupabaseSyncMsg({
         type: 'error',
