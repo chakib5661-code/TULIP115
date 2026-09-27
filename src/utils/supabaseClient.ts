@@ -92,6 +92,32 @@ export async function directClientTestSupabase(): Promise<{
 }
 
 /**
+ * Direct browser fetch of state from Supabase for all client devices
+ * (Guarantees multi-device real-time sync even on static Vercel hosts!)
+ */
+export async function directClientFetchFromSupabase(): Promise<any | null> {
+  const client = getClientSupabase();
+  if (!client) return null;
+
+  try {
+    const { data, error } = await client
+      .from('tulip_store_state')
+      .select('data')
+      .eq('key', 'main_state')
+      .maybeSingle();
+
+    if (error || !data || !data.data) {
+      return null;
+    }
+
+    return data.data;
+  } catch (e) {
+    console.warn('[SupabaseClient] directClientFetchFromSupabase notice:', e);
+    return null;
+  }
+}
+
+/**
  * Direct browser push of state to Supabase
  */
 export async function directClientSaveToSupabase(dbSnapshot: any): Promise<{

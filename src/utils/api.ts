@@ -9,6 +9,7 @@ import {
 } from '../types';
 import { idbSaveSyncSnapshot, idbGetSyncSnapshot, idbSaveProducts } from './indexedDb';
 import { prefetchProductImages } from './imageCache';
+import { directClientFetchFromSupabase } from './supabaseClient';
 
 export interface SyncDataResponse {
   status: string;
@@ -91,22 +92,47 @@ export async function fetchSyncData(timeoutMs = 1800): Promise<SyncDataResponse 
     clearTimeout(timer);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data: SyncDataResponse = await res.json();
-    saveCachedSyncData(data);
-    return data;
+    if (Array.isArray(data.products) && data.products.length > 0) {
+      saveCachedSyncData(data);
+      return data;
+    }
   } catch (err: any) {
     clearTimeout(timer);
-    // On slow mobile networks, timeout, or offline: immediately fall back to local snapshot
-    const cached = getCachedSyncData();
-    if (cached) {
-      return cached;
-    }
-    const idbCached = await idbGetSyncSnapshot();
-    if (idbCached) {
-      return idbCached as any;
-    }
-    console.warn('[API] fetchSyncData notice (using local state):', err?.message || err);
-    return null;
   }
+
+  // DIRECT SUPABASE FALLBACK: If serverless function /api/sync is empty or unavailable,
+  // load the complete live store state directly from Supabase (works on all devices & mobile phones!)
+  try {
+    const directSupabaseData = await directClientFetchFromSupabase();
+    if (directSupabaseData && Array.isArray(directSupabaseData.products) && directSupabaseData.products.length > 0) {
+      const formattedData: SyncDataResponse = {
+        status: 'ok',
+        products: directSupabaseData.products,
+        orders: Array.isArray(directSupabaseData.orders) ? directSupabaseData.orders : [],
+        customerApplications: Array.isArray(directSupabaseData.customerApplications) ? directSupabaseData.customerApplications : [],
+        customerUsers: Array.isArray(directSupabaseData.customerUsers) ? directSupabaseData.customerUsers : [],
+        adBanners: Array.isArray(directSupabaseData.adBanners) ? directSupabaseData.adBanners : [],
+        storeSettings: directSupabaseData.storeSettings || ({} as any),
+        lastUpdated: directSupabaseData.lastUpdated || new Date().toISOString(),
+        serverTime: new Date().toISOString(),
+      };
+      saveCachedSyncData(formattedData);
+      return formattedData;
+    }
+  } catch (supabaseErr) {
+    console.warn('[API] directClientFetchFromSupabase notice:', supabaseErr);
+  }
+
+  // Fallback to local device cache or IndexedDB
+  const cached = getCachedSyncData();
+  if (cached) {
+    return cached;
+  }
+  const idbCached = await idbGetSyncSnapshot();
+  if (idbCached) {
+    return idbCached as any;
+  }
+  return null;
 }
 
 export async function submitOrderToServer(

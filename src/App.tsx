@@ -347,6 +347,20 @@ export default function App() {
       });
     }).catch(() => {});
 
+    // For new devices / empty cache: immediately trigger live sync from Supabase/Server
+    fetchSyncData(3000).then((data) => {
+      if (!active || !data) return;
+      if (Array.isArray(data.products) && data.products.length > 0) {
+        setProducts(data.products);
+        setIsCatalogLoading(false);
+      }
+      if (Array.isArray(data.orders)) setOrders(data.orders);
+      if (Array.isArray(data.customerApplications)) setCustomerApplications(data.customerApplications);
+      if (Array.isArray(data.customerUsers)) setCustomerUsers(data.customerUsers);
+      if (Array.isArray(data.adBanners)) setAdBanners(data.adBanners);
+      if (data.storeSettings) setStoreSettings(data.storeSettings);
+    }).catch(() => {});
+
     return () => { active = false; };
   }, []);
 
@@ -983,6 +997,14 @@ export default function App() {
               return !pb || pb.id !== b.id || pb.isActive !== b.isActive || pb.imageUrl !== b.imageUrl;
             });
             return hasChanged ? data.adBanners : prev;
+          });
+        }
+        if (data.storeSettings && typeof data.storeSettings === 'object') {
+          setStoreSettings((prev) => {
+            if (JSON.stringify(prev) !== JSON.stringify(data.storeSettings)) {
+              return data.storeSettings;
+            }
+            return prev;
           });
         }
       } catch (err) {
