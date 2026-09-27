@@ -1,15 +1,17 @@
 /**
  * PWA Version Manager & Service Worker Registration Helper
- * Safely handles service worker registration and updates across browsers and PWA environments.
+ * Safely handles service worker registration, version logging, and updates across browsers and PWA environments.
  */
+
+export const APP_VERSION = '1.1.5';
 
 export function registerPwaServiceWorker(): void {
   if (typeof window === 'undefined') return;
 
+  console.log(`[PWA] Tulip Fragrance Company running version ${APP_VERSION}`);
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      // If service worker is registered via vite-plugin-pwa, let it handle autoUpdate.
-      // Otherwise, gracefully handle any legacy registrations.
       navigator.serviceWorker
         .getRegistrations()
         .then((registrations) => {
@@ -34,6 +36,7 @@ export function unregisterPwaServiceWorker(): Promise<boolean> {
 }
 
 export default {
+  APP_VERSION,
   registerPwaServiceWorker,
   unregisterPwaServiceWorker,
 };
